@@ -1,2 +1,2 @@
 # limber
-University Schuduling
+University Scheduling
