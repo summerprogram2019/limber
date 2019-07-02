@@ -1,3 +1,3 @@
 # limber
-University Scheduling
+University Scheduling\
 member: Emerson Rasmus Billy Lucy Michael Icy
