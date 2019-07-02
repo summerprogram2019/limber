@@ -1,0 +1,19 @@
+{
+  "name": "limber",
+  "version": "1.0.0",
+  "description": "University Scheduling",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/summerprogram2019/limber.git"
+  },
+  "author": "Limber Group",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/summerprogram2019/limber/issues"
+  },
+  "homepage": "https://github.com/summerprogram2019/limber#readme"
+}
