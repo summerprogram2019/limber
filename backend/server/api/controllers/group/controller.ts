@@ -4,11 +4,12 @@ import Group from '../../../sequelize/models/group.js';
 export class Controller {
   group(req: Request, res: Response): void {
     const { name, description, tags } = req.body;
-    Group.create({
+    let group = Group.create({
       name,
       description,
-      tags
-    })
+      tags,
+      owner: req.user
+    });
   }
 }
 export default new Controller();
