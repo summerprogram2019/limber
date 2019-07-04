@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: backendjs
-  description: backend
+  description: Limber backend
   version: 1.0.0
 servers:
 - url: /api/v1
@@ -61,6 +61,16 @@ paths:
         200:
           description: Return the API specification
           content: {}
+  /group:
+    post:
+      tags:
+      - Group
+      responses:
+        200:
+          description: Successfully made the group
+          content: {}
+        401:
+
 components:
   schemas:
     ExampleBody:
