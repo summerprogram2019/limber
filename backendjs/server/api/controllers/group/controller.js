@@ -3,7 +3,7 @@ const Model = require('../../../sequelize/models');
 const Group = Model.Group;
 
 export class Controller {
-  group(req: any, res: Response): void {
+  group(req, res) {
     const { name, description, tags } = req.body;
       let group = Group.create({
         name,

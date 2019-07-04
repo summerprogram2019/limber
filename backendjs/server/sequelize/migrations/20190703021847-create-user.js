@@ -8,6 +8,9 @@ module.exports = {
       profile: {
         type: Sequelize.STRING
       },
+      email: {
+        type: Sequelize.STRING
+      },
       sub: {
         type: Sequelize.STRING,
         allowNull: false,

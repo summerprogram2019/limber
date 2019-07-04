@@ -13,12 +13,22 @@ tags:
 paths:
   /auth:
     get:
+      parameters:
+      - name: Authorization
+        in: header
+        description: The authorization token for auth0
+        required: true
+        schema:
+          type: string
       tags:
         - Authentication
       description: Test Authentication
       responses:
         200:
           description: Authenticated
+          content: {}
+        401:
+          description: Unauthenticated
           content: {}
   /examples:
     get:
@@ -74,12 +84,72 @@ paths:
     post:
       tags:
       - Group
+      parameters:
+      - name: name
+        in: query
+        description: The name of the group to create
+        required: true
+        schema:
+          type: string
+      - name: description
+        in: query
+        description: The description of the group to create
+        required: true
+        schema:
+          type: string
+      - name: tags
+        in: query
+        description: The tags of the group to create
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: Authorization
+        in: header
+        description: The authorization token for auth0
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: Successfully made the group
-          content: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successful"
+                  data:
+                    type: object
+                    example: {
+                      id: 1,
+                      name: "Group name",
+                      description: "Group description",
+                      tags: ["tag1", "tag2"],
+                      owner: "auth0|..."
+                    }
         401:
-
+          description: Unauthenticated or invalid user token
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                      example: false
+                    message:
+                      type: string
+                      example: "Failed to Authenticate"
+                    data:
+                      type: object
+                      example: null
 components:
   schemas:
     ExampleBody:

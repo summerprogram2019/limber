@@ -1,4 +1,0 @@
-dist
-node_modules
-.env
-server/sequelize/config/config.json
