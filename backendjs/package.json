@@ -16,10 +16,15 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
+    "express-jwt": "^5.3.1",
+    "express-jwt-authz": "^2.3.1",
+    "express-openapi-validator": "^1.0.0",
+    "jwks-rsa": "^1.5.1",
     "pino": "^5.12.6",
-    "express-openapi-validator": "^1.0.0"
+    "sequelize": "^5.9.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
