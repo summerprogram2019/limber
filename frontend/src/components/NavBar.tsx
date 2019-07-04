@@ -1,44 +1,37 @@
 import React from "react";
-import { useAuth0 } from "../react-auth0-wrapper";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { AppBar, Toolbar, Typography } from '@material-ui/core';
+
+import ProfileAvatar from "./ProfileAvatar";
+import ElevationScroll from "./ElevationScroll";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    title: {
+      flexGrow: 1,
+    }
+  }),
+);
 
 const NavBar: React.FC = () => {
-  const { isAuthenticated, getTokenSilently, loginWithRedirect, logout } = useAuth0();
-  const apiHost: string = "http://localhost:4000";
-
-  const authRequest = async () => {
-    let token: string;
-    try {
-      token = await getTokenSilently();
-    } catch (error) {
-      token = "";
-    }
-    console.log(token);
-    let response: Response = await fetch(apiHost + "/api/v1/auth", {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    });
-    let json = await response.json();
-    console.log(json);
-  }
+  const classes = useStyles();
 
   return (
-    <div>
-      <button onClick={() => authRequest()}>
-        Auth
-      </button>
-      {!isAuthenticated && (
-        <button
-          onClick={() =>
-            loginWithRedirect({})
-          }
-        >
-          Log in
-        </button>
-      )}
-      {isAuthenticated && <button onClick={() => logout()}>Log out</button>}
-    </div>
+    <React.Fragment>
+      <ElevationScroll>
+        <AppBar position="sticky" color="primary">
+          <Toolbar>
+            <Typography variant="h6" className={classes.title}>
+              {/* Application Name */}
+            </Typography>
+            <ProfileAvatar />
+          </Toolbar>
+        </AppBar>
+      </ElevationScroll>
+    </React.Fragment>
   );
 };
 
