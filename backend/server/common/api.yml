@@ -70,6 +70,12 @@ paths:
         200:
           description: Return the API specification
           content: {}
+  /group:
+    /post:
+      tags:
+      - Group
+      parameters:
+      - name: id
 components:
   schemas:
     ExampleBody:
