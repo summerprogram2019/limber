@@ -18,7 +18,7 @@ class ExamplesDatabase {
   insert(name) {
     const record = {
       id: this._counter,
-      name,
+      name
     };
 
     this._counter += 1;

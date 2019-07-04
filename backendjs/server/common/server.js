@@ -4,6 +4,7 @@ import * as bodyParser from 'body-parser';
 import * as http from 'http';
 import * as os from 'os';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import { OpenApiValidator } from 'express-openapi-validator';
 import errorHandler from '../api/middlewares/error.handler';
@@ -20,16 +21,17 @@ export default class ExpressServer {
     app.use(
       bodyParser.urlencoded({
         extended: true,
-        limit: process.env.REQUEST_LIMIT || '100kb',
+        limit: process.env.REQUEST_LIMIT || '100kb'
       })
     );
     app.use(cookieParser(process.env.SESSION_SECRET));
     app.use(Express.static(`${root}/public`));
+    app.use(cors());
 
     const apiSpecPath = path.join(__dirname, 'api.yml');
     app.use(process.env.OPENAPI_SPEC || '/spec', Express.static(apiSpecPath));
     new OpenApiValidator({
-      apiSpecPath,
+      apiSpecPath
     }).install(app);
   }
 

@@ -11,6 +11,15 @@ tags:
 - name: Specification
   description: The swagger API specification
 paths:
+  /auth:
+    get:
+      tags:
+        - Authentication
+      description: Test Authentication
+      responses:
+        200:
+          description: Authenticated
+          content: {}
   /examples:
     get:
       tags:
