@@ -1,13 +1,13 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('Group', 'owner', Sequelize.STRING)
+    return queryInterface.addColumn('Groups', 'owner', Sequelize.STRING)
       .then(function () {
-        queryInterface.addConstraint('Group', ['owner'], {
+        queryInterface.addConstraint('Groups', ['owner'], {
           type: 'foreign key',
           name: 'group_owner_fkey',
           references: {
-            table: 'User',
+            table: 'Users',
             field: 'sub'
           },
           onDelete: 'cascade',
@@ -16,9 +16,9 @@ module.exports = {
       });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeConstraint('Group', 'group_owner_fkey')
+    return queryInterface.removeConstraint('Groups', 'group_owner_fkey')
       .then(function () {
-        queryInterface.removeConstraint('Group', 'owner');
+        queryInterface.removeConstraint('Groups', 'owner');
       });
   }
 };
