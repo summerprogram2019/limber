@@ -39,6 +39,51 @@ paths:
           description: Return the API specification
           content: {}
   /group:
+    get:
+      tags:
+      - Group
+      parameters:
+      - name: id
+        in: query
+        description: The id of the group to query
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successfully queried the group
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successful"
+                  data:
+                    type: object
+                    example: {
+                      id: 1,
+                      name: "Group name",
+                      description: "Group description",
+                      tags: ["tag1", "tag2"],
+                      owner: "auth0|..."
+                    }
+        401:
+          description: Unauthenticated or invalid user token
+          content:
+            application/json:
+                schema:
+                  $ref: '#/definitions/Unauthenticated'
+        403:
+          description: Permission denied
+          content:
+            application/json:
+                schema:
+                  $ref: '#/definitions/PermissionDenied'
     post:
       tags:
       - Group
@@ -97,17 +142,13 @@ paths:
           content:
             application/json:
                 schema:
-                  type: object
-                  properties:
-                    success:
-                      type: boolean
-                      example: false
-                    message:
-                      type: string
-                      example: "Failed to Authenticate"
-                    data:
-                      type: object
-                      example: null
+                  $ref: '#/definitions/Unauthenticated'
+        403:
+          description: Permission denied
+          content:
+            application/json:
+                schema:
+                  $ref: '#/definitions/PermissionDenied'
 components:
   schemas:
     ExampleBody:
@@ -119,3 +160,29 @@ components:
         name:
           type: string
           example: no_stress
+    Unauthenticated:
+      title: Unauthenticated response
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Failed to Authenticate"
+        data:
+          type: object
+          example: null
+    PermissionDenied:
+      title: User has insufficient permissions
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Permission Denied"
+        data:
+          type: object
+          example: null
