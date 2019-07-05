@@ -38,17 +38,24 @@ paths:
         200:
           description: Return the API specification
           content: {}
-  /group:
+  /group/{id}:
     get:
       tags:
       - Group
+      description: Get details of a group
       parameters:
       - name: id
-        in: query
+        in: path
         description: The id of the group to query
         required: true
         schema:
           type: integer
+      - name: Authorization
+        in: header
+        description: The authorization token for auth0
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: Successfully queried the group
@@ -72,51 +79,44 @@ paths:
                       tags: ["tag1", "tag2"],
                       owner: "auth0|..."
                     }
+        400:
+          description: "Group does not exist"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Group does not exist"
+                  data:
+                    type: object
+                    example: {}
+
         401:
           description: Unauthenticated or invalid user token
-          content:
-            application/json:
-                schema:
-                  $ref: '#/definitions/Unauthenticated'
+          content: {}
         403:
           description: Permission denied
-          content:
-            application/json:
-                schema:
-                  $ref: '#/definitions/PermissionDenied'
+          content: {}
+  /group:
     post:
       tags:
       - Group
+      description: Create a new group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/CreateGroup"
       parameters:
-      - name: id
-        in: query
-        description: The id of the group to modify
-        required: false
-        schema:
-          type: integer
-      - name: name
-        in: query
-        description: The name of the group to create
-        required: true
-        schema:
-          type: string
-      - name: description
-        in: query
-        description: The description of the group to create
-        required: true
-        schema:
-          type: string
-      - name: tags
-        in: query
-        description: The tags of the group to create
-        required: true
-        schema:
-          type: array
-          items:
-            type: string
       - name: Authorization
         in: header
-        description: The authorization token for auth0
+        description: auth0 Access Token
         required: true
         schema:
           type: string
@@ -138,47 +138,16 @@ paths:
                     type: object
                     example: {
                       id: 1,
-                      name: "Group name",
-                      description: "Group description",
+                      name: "New Group",
+                      description: "Description of the new group",
                       tags: ["tag1", "tag2"],
                       owner: "auth0|..."
                     }
         401:
           description: Unauthenticated or invalid user token
-          content:
-            application/json:
-                schema:
-                  $ref: '#/definitions/Unauthenticated'
-        403:
-          description: Permission denied
-          content:
-            application/json:
-                schema:
-                  $ref: '#/definitions/PermissionDenied'
+          content: {}
 components:
   schemas:
-    ExampleBody:
-      title: example
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          type: string
-          example: no_stress
-    Unauthenticated:
-      title: Unauthenticated response
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: false
-        message:
-          type: string
-          example: "Failed to Authenticate"
-        data:
-          type: object
-          example: null
     PermissionDenied:
       title: User has insufficient permissions
       type: object
@@ -192,3 +161,21 @@ components:
         data:
           type: object
           example: null
+    CreateGroup:
+      title: Create a group
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: "New Group"
+        description:
+          type: string
+          example: "Description of the new group"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["tag1", "tag2"]
