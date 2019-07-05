@@ -19,4 +19,7 @@ export default function decodeUser(req, res) {
         sub: req.user.sub
     }
   });
+  req.user_obj.name = name;
+  req.user_obj.profile = profile;
+  req.user_obj.email = email;
 }
