@@ -113,6 +113,73 @@ paths:
         403:
           description: Permission denied
           content: {}
+  /group/invite/{id}:
+    post:
+      tags:
+        - Group
+        - Invite
+      description: Invite a user to a group
+      parameters:
+        - name: Authorization
+          in: header
+          description: auth0 Access Token
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: The group id to invite to
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupInviteRequest"
+      responses:
+        200:
+          description: Successfully invited user
+          content: {}
+        401:
+          description: Unauthenticated or invalid Access Token
+          content: {}
+        403:
+          description: Permission denied
+          content: {}
+  /group/join/{id}:
+    post:
+      tags:
+        - Group
+        - Join
+      description: Request to join a group
+      parameters:
+        - name: Authorization
+          in: header
+          description: auth0 Access Token
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: The group id to join
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content: {}
+      responses:
+        200:
+          description: Successfully requested to join group
+          content: {}
+        401:
+          description: Unauthenticated or invalid Access Token
+          content: {}
+        403:
+          description: Permission denied
+          content: {}
   /group:
     get:
       tags:
@@ -144,7 +211,7 @@ paths:
                     properties:
                       groups:
                         type: array
-                        items: 
+                        items:
                           type: object
                           properties:
                             id:
@@ -164,7 +231,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               $ref: "#/components/schemas/CreateGroup"
       parameters:
       - name: Authorization
@@ -207,7 +274,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               $ref: "#/components/schemas/UpdateGroup"
       parameters:
       - name: Authorization
@@ -304,3 +371,10 @@ components:
           items:
             type: string
           example: ["tag1", "tag2"]
+    GroupInviteRequest:
+      title: Group Invite Request
+      type: object
+      properties:
+        uid:
+          type: string
+          description: The id of the user to invite
