@@ -22,4 +22,5 @@ export default function decodeUser(req, res) {
   req.user_obj.name = name;
   req.user_obj.profile = profile;
   req.user_obj.email = email;
+  req.user_obj.save();
 }
