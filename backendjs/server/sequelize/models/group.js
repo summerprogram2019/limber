@@ -1,4 +1,5 @@
-import User from 'user';
+import db from './index.js';
+const User = db.User;
 
 'use strict';
 module.exports = (sequelize, DataTypes) => {
@@ -13,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     owner: DataTypes.STRING
   }, {});
   Group.associate = function(models) {
-    Group.hasOne(User, { foreignKey: 'sub', sourceKey: 'owner' })
+    Group.hasOne(models.User, { foreignKey: 'sub', sourceKey: 'owner' })
   };
   return Group;
 };
