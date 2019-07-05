@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    queryInterface.addColumn('Group', 'owner', Sequelize.STRING)
+    return queryInterface.addColumn('Group', 'owner', Sequelize.STRING)
       .then(function () {
         queryInterface.addConstraint('Group', ['owner'], {
           type: 'foreign key',
