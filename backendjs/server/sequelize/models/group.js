@@ -1,3 +1,5 @@
+import User from 'user';
+
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Group = sequelize.define('Group', {
