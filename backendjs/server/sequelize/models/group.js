@@ -7,10 +7,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     description: DataTypes.STRING,
-    tags: DataTypes.JSON
+    tags: DataTypes.JSON,
+    owner: DataTypes.STRING
   }, {});
   Group.associate = function(models) {
-    // associations can be defined here
+    Group.hasOne(User, { foreignKey: 'sub', sourceKey: 'owner' })
   };
   return Group;
 };
