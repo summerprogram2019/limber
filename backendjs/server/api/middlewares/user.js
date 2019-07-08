@@ -1,5 +1,5 @@
-const Model = require('../../../sequelize/models');
-const Group = Model.Group;
+const Model = require('../../sequelize/models');
+const User = Model.User;
 
 const prefix = 'https://api.limber.co/';
 
