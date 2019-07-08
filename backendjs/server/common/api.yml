@@ -34,6 +34,61 @@ paths:
           description: Return the API specification
           content: {}
   /group/{id}:
+    put:
+      tags:
+      - Group
+      description: Update a group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateGroup"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successfully queried the group
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successful"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Group Name
+                      description:
+                        type: string
+                        example: Group description
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                          example: ["tag1", "tag2"]
+                      owner:
+                        type: string
+                        example: "auth0|..."
+        401:
+          description: Unauthenticated or invalid user token
+          content: {}
+        403:
+          description: Permission denied
+          content: {}
+        400:
+          description: Bad request upon invalid group
+          content: {}
     get:
       tags:
       - Group
@@ -239,58 +294,6 @@ paths:
         401:
           description: Unauthenticated or invalid Access Token
           content: {}
-    put:
-      tags:
-      - Group
-      description: Update a group
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateGroup"
-      security:
-        - BearerAuth: []
-      responses:
-        200:
-          description: Successfully queried the group
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: "Successful"
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 1
-                      name:
-                        type: string
-                        example: Group Name
-                      description:
-                        type: string
-                        example: Group description
-                      tags:
-                        type: array
-                        items:
-                          type: string
-                          example: ["tag1", "tag2"]
-                      owner:
-                        type: string
-                        example: "auth0|..."
-        401:
-          description: Unauthenticated or invalid user token
-          content: {}
-        403:
-          description: Permission denied
-          content: {}
   /event:
     post:
       tags:
@@ -384,8 +387,65 @@ paths:
         401:
           description: Unauthenticated or invalid Access Token
           content: {}
-#  /event/{id}:
-#    put:
+  /event/{id}:
+    put:
+      tags:
+      - Group
+      description: Update a event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEvent"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successfully queried the event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successful"
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: Event Name
+                      description:
+                        type: string
+                        example: Event description
+                      next:
+                        type: integer
+                        example: 1
+                      datetime:
+                        type: string
+                        format: date-time
+                      length:
+                        type: integer
+                        example: 3600
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                          example: ["tag1", "tag2"]
+        401:
+          description: Unauthenticated or invalid user token
+          content: {}
+        403:
+          description: Permission denied
+          content: {}
+        400:
+          description: Bad request upon invalid event
+          content: {}
 #    get:
 #  /event/join/{id}:
 #    post:
