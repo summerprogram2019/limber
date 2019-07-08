@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Button, IconButton, Avatar, MenuItem, Popper, Paper, ClickAwayListener, MenuList, Grow } from '@material-ui/core';
 import { Person, Settings, ExitToApp } from "@material-ui/icons";
+import { useTranslation } from "react-i18next";
 import { useAuth0 } from "../react-auth0-wrapper";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -24,9 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ProfileAvatar: React.FC = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const { isAuthenticated, loading, user, getTokenSilently, loginWithRedirect, logout } = useAuth0();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
 
   async function authRequest(event: React.MouseEvent<EventTarget>) {
@@ -90,9 +92,9 @@ const ProfileAvatar: React.FC = () => {
                 <Paper id="menu-list-grow" className={classes.dropdown}>
                   <ClickAwayListener onClickAway={handleClose}>
                     <MenuList>
-                      <MenuItem onClick={handleClose}><Person className={classes.icon} />Profile</MenuItem>
-                      <MenuItem onClick={authRequest}><Settings className={classes.icon} />Settings</MenuItem>
-                      <MenuItem onClick={handleLogout}><ExitToApp className={classes.icon} />Sign Out</MenuItem>
+                      <MenuItem onClick={handleClose}><Person className={classes.icon} />{t("Profile")}</MenuItem>
+                      <MenuItem onClick={authRequest}><Settings className={classes.icon} />{t("Settings")}</MenuItem>
+                      <MenuItem onClick={handleLogout}><ExitToApp className={classes.icon} />{t("Sign Out")}</MenuItem>
                     </MenuList>
                   </ClickAwayListener>
                 </Paper>

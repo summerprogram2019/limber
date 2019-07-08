@@ -1,12 +1,18 @@
 {
   "en": {
     "translation": {
-      "Welcome to React": "Welcome to React and react-i18next"
+      "Welcome to React": "Welcome to React and react-i18next",
+      "Profile": "Profile",
+      "Settings": "Settings",
+      "Sign Out": "Sign Out"
     }
   },
   "zh": {
     "translation": {
-      "Welcome to React": "你们还"
+      "Welcome to React": "欢迎",
+      "Profile": "账户",
+      "Settings": "设定",
+      "Sign Out": "登出"
     }
   }
 }
