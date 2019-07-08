@@ -23,7 +23,7 @@ export class Controller {
     });
   }
   get(req, res) {
-    const { id } = req.body;
+    const { id } = req.param.id;
     let group = Group.findOne({
       where: {
         id: id
@@ -36,6 +36,37 @@ export class Controller {
         "data": {}
       })
     }
+    res.sendStatus(200).json({
+      "success": true,
+      "message": "Successful",
+      "data": {
+        "id": id,
+        "name": group.name,
+        "description": group.description,
+        "tags": group.tags,
+        "owner": group.owner
+      }
+    });
+  }
+  update(req, res) {
+    const id = req.param.id
+    const { name, description, tags } = req.body;
+    let group = Group.findOne({
+      where: {
+        id: id
+      }
+    });
+    if(group == null) {
+      res.sendStatus(400).json({
+        "success": false,
+        "message": "Group does not exist",
+        "data": {}
+      })
+    }
+    group.name = name
+    group.description = description
+    group.tags = tags
+    group.save().then(() => {})
     res.sendStatus(200).json({
       "success": true,
       "message": "Successful",
