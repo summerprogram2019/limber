@@ -23,7 +23,7 @@ export class Controller {
       }
     });
   }
-  get(req, res) {
+  findOne(req, res) {
     const { id } = req.body;
     let group = Group.findAll({
       where: {
