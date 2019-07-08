@@ -73,7 +73,7 @@ export class Controller {
         id: id
       }
     });
-    if(group == null) {
+    if (group == null) {
       res.sendStatus(400).json({
         "success": false,
         "message": "Group does not exist",
@@ -95,6 +95,28 @@ export class Controller {
         "owner": group.owner
       }
     });
+  }
+  async create(req, res) {
+    const { name, description, tags } = req.body;
+    const owner = req.user.sub;
+    try {
+      let group = await Group.create({
+        name,
+        description,
+        tags,
+        owner
+      });
+      res.status(200).json({
+        success: true,
+        message: 'Successfully Created',
+        data: group
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
   }
 }
 export default new Controller();

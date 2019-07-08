@@ -228,13 +228,8 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateGroup"
-      parameters:
-      - name: Authorization
-        in: header
-        description: auth0 Access Token
-        required: true
-        schema:
-          type: string
+      security:
+        - BearerAuth: []
       responses:
         200:
           description: Successfully made the group
