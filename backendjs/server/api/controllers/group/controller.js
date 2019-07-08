@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 const Model = require('../../../sequelize/models');
 const Group = Model.Group;
 
