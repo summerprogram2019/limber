@@ -4,7 +4,7 @@ const Group = Model.Group;
 export class Controller {
   async getOne(req, res) {
     try {
-      const { id } = req.param;
+      const { id } = req.params;
       let group = await Group.findOne({
         where: {
           id: id
@@ -48,7 +48,7 @@ export class Controller {
 
   async update(req, res) {
     try {
-      const { id } = req.param;
+      const { id } = req.params;
       const { name, description, tags } = req.body;
       let group = await Group.findOne({
         where: {
