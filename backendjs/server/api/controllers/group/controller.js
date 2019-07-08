@@ -22,31 +22,20 @@ export class Controller {
       }
     });
   }
-  get(req, res) {
-    const { id } = req.body;
-    let group = Group.findOne({
-      where: {
-        id: id
-      }
-    });
-    if(group == null) {
-      res.sendStatus(400).json({
-        "success": false,
-        "message": "Group does not exist",
-        "data": {}
-      })
+  async get(req, res) {
+    try {
+      let groups = await Group.findAll();
+      res.status(200).json({
+        success: true,
+        message: 'Successfully Retrieved',
+        data: groups
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        messasge: error.message
+      });
     }
-    res.sendStatus(200).json({
-      "success": true,
-      "message": "Successful",
-      "data": {
-        "id": id,
-        "name": group.name,
-        "description": group.description,
-        "tags": group.tags,
-        "owner": group.owner
-      }
-    });
   }
 }
 export default new Controller();

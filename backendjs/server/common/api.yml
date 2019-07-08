@@ -185,13 +185,8 @@ paths:
       tags:
         - Group
       description: Get a list of groups
-      parameters:
-      - name: Authorization
-        in: header
-        description: auth0 Access Token
-        required: true
-        schema:
-          type: string
+      security:
+        - BearerAuth: []
       responses:
         200:
           description: Successfully retrieved groups
@@ -324,6 +319,10 @@ paths:
           description: Permission denied
           content: {}
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     PermissionDenied:
       title: User has insufficient permissions
