@@ -5,21 +5,21 @@ export class Controller {
   async group(req, res) {
     try {
       const { name, description, tags } = req.body;
-      let group = Group.create({
+      let group = await Group.create({
         name,
         description,
         tags,
         owner: req.user.sub
       });
       res.sendStatus(200).json({
-        "success": true,
-        "message": "Successful",
-        "data": {
-          "id": id,
-          "name": group.name,
-          "description": group.description,
-          "tags": group.tags,
-          "owner": group.owner
+        success: true,
+        message: 'Successful',
+        data: {
+          id: group.id,
+          name: group.name,
+          description: group.description,
+          tags: group.tags,
+          owner: group.owner
         }
       });
     } catch (error) {
@@ -32,24 +32,30 @@ export class Controller {
 
   async getOne(req, res) {
     try {
-      const { id } = req.body;
-      let group = Group.findOne({
+      const { id } = req.param.id;
+      let group = await Group.findOne({
         where: {
           id: id
         }
       });
+      res.status(200).json({
+        success: true,
+        message: 'Successfully Retrieved',
+        data: {
+          id: id,
+          name: group.name,
+          description: group.description,
+          tags: group.tags,
+          owner: group.owner
+        }
+      });
     } catch (error) {
-      if (group == null) {
-        res.sendStatus(400).json({
-          "success": false,
-          "message": "Group does not exist",
-          "data": {}
-        });
-      }
-      
+      res.status(500).json({
+        success: false,
+        messasge: error.message
+      });
     }
   }
-
   async get(req, res) {
     try {
       let groups = await Group.findAll();
@@ -65,36 +71,36 @@ export class Controller {
       });
     }
   }
-  update(req, res) {
-    const id = req.param.id
-    const { name, description, tags } = req.body;
-    let group = Group.findOne({
-      where: {
-        id: id
-      }
-    });
-    if (group == null) {
-      res.sendStatus(400).json({
-        "success": false,
-        "message": "Group does not exist",
-        "data": {}
-      })
+  async update(req, res) {
+    try {
+      const id = req.param.id;
+      const { name, description, tags } = req.body;
+      let group = Group.findOne({
+        where: {
+          id: id
+        }
+      });
+      group.name = name;
+      group.description = description;
+      group.tags = tags;
+      group.save().then(() => {});
+      res.sendStatus(200).json({
+        success: true,
+        message: 'Successful',
+        data: {
+          id: id,
+          name: group.name,
+          description: group.description,
+          tags: group.tags,
+          owner: group.owner
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        messasge: error.message
+      });
     }
-    group.name = name
-    group.description = description
-    group.tags = tags
-    group.save().then(() => {})
-    res.sendStatus(200).json({
-      "success": true,
-      "message": "Successful",
-      "data": {
-        "id": id,
-        "name": group.name,
-        "description": group.description,
-        "tags": group.tags,
-        "owner": group.owner
-      }
-    });
   }
   async create(req, res) {
     const { name, description, tags } = req.body;
