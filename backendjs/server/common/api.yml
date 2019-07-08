@@ -13,13 +13,8 @@ tags:
 paths:
   /auth:
     get:
-      parameters:
-      - name: Authorization
-        in: header
-        description: auth0 Access Token
-        required: true
-        schema:
-          type: string
+      security:
+        - BearerAuth: []
       tags:
         - Authentication
       description: Test Authentication
@@ -43,6 +38,8 @@ paths:
       tags:
       - Group
       description: Get details of a group
+      security:
+        - BearerAuth: []
       parameters:
       - name: id
         in: path
@@ -50,12 +47,6 @@ paths:
         required: true
         schema:
           type: integer
-      - name: Authorization
-        in: header
-        description: auth0 Access Token
-        required: true
-        schema:
-          type: string
       responses:
         200:
           description: Successfully queried the group
@@ -119,13 +110,9 @@ paths:
         - Group
         - Invite
       description: Invite a user to a group
+      security:
+        - BearerAuth: []
       parameters:
-        - name: Authorization
-          in: header
-          description: auth0 Access Token
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           description: The group id to invite to
@@ -154,13 +141,9 @@ paths:
         - Group
         - Join
       description: Request to join a group
+      security:
+        - BearerAuth: []
       parameters:
-        - name: Authorization
-          in: header
-          description: auth0 Access Token
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           description: The group id to join
@@ -266,13 +249,8 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/UpdateGroup"
-      parameters:
-      - name: Authorization
-        in: header
-        description: auth0 Access Token
-        required: true
-        schema:
-          type: string
+      security:
+        - BearerAuth: []
       responses:
         200:
           description: Successfully queried the group
@@ -313,6 +291,74 @@ paths:
         403:
           description: Permission denied
           content: {}
+  /event:
+    post:
+      tags:
+      - Event
+      description: Create an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEvent"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successfully created the event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successful"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Event Name
+                      description:
+                        type: string
+                        example: Event description
+                      next:
+                        type: integer
+                        example: 1
+                      datetime:
+                        type: string
+                        format: date-time
+                      length:
+                        type: integer
+                        example: 3600
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                          example: ["tag1", "tag2"]
+                      owner:
+                        type: string
+                        example: "auth0|..."
+        401:
+          description: Unauthenticated or invalid user token
+          content: {}
+        403:
+          description: Permission denied
+          content: {}
+    get:
+  /event/{id}:
+    put:
+    get:
+  /event/join/{id}:
+    post:
 components:
   securitySchemes:
     BearerAuth:

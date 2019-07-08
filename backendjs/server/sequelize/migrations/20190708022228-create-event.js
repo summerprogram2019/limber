@@ -19,7 +19,8 @@ module.exports = {
         references: {
           model: 'Events',
           key: 'id'
-        }
+        },
+        allowNull: true
       },
       datetime: {
         type: Sequelize.DATE
