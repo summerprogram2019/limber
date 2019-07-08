@@ -2,4 +2,4 @@ import express from 'express';
 import controller from './controller';
 export default express.Router()
     .post('/', controller.group)
-    .get('/', controller.getOne);
+    .get('/', controller.get);

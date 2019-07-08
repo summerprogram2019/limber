@@ -23,9 +23,9 @@ export class Controller {
       }
     });
   }
-  findOne(req, res) {
+  get(req, res) {
     const { id } = req.body;
-    let group = Group.findAll({
+    let group = Group.findOne({
       where: {
         id: id
       }
