@@ -83,7 +83,7 @@ paths:
                         type: array
                         items:
                           type: string
-                          example: ["tag1", "tag2"]
+                        example: ["tag1", "tag2"]
                       owner:
                         type: string
                         example: "auth0|..."
@@ -335,9 +335,9 @@ paths:
                         example: 3600
                       tags:
                         type: array
+                        example: ["tag1", "tag2"]
                         items:
                           type: string
-                          example: ["tag1", "tag2"]
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -435,9 +435,9 @@ paths:
                         example: 3600
                       tags:
                         type: array
+                        example: ["tag1", "tag2"]
                         items:
                           type: string
-                          example: ["tag1", "tag2"]
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -619,7 +619,7 @@ components:
           type: array
           items:
             type: string
-            example: ["tag1", "tag2"]
+          example: ["tag1", "tag2"]
     CreateEvent:
       title: Create an event
       type: object
@@ -643,4 +643,4 @@ components:
           type: array
           items:
             type: string
-            example: ["tag1", "tag2"]
+          example: ["tag1", "tag2"]
