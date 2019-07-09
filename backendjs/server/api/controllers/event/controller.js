@@ -1,6 +1,6 @@
 const Model = require('../../../sequelize/models');
 const Event = Model.Event;
-
+const EventParticipation = Model.EventParticipation;
 export class Controller {
   async getOne(req, res) {
     try {
@@ -105,6 +105,26 @@ export class Controller {
         success: true,
         message: 'Successfully Created',
         data: event
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+  async join(req, res) {
+    const user = req.user.sub;
+    const { id } = req.params;
+    try {
+      let participation = await EventParticipation.create({
+        user,
+        event: id
+      });
+      res.status(200).json({
+        success: true,
+        message: 'Successfully Created',
+        data: participation
       });
     } catch (error) {
       res.status(500).json({
