@@ -3,4 +3,6 @@ import controller from './controller';
 export default express
   .Router()
   .post('/', controller.create)
-  .get('/', controller.get);
+  .get('/', controller.get)
+  .get('/:id', controller.getOne)
+  .put('/:id', controller.update);
