@@ -12,7 +12,7 @@ interface Group {
   name: string,
   description: string,
   tags: string[],
-  picture: string
+  image: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -113,7 +113,7 @@ const Groups: React.FC = () => {
               name={group.name}
               description={group.description}
               tags={group.tags}
-              image={group.picture}
+              image={group.image}
               cardClass={classes.card}
             />)}
           </div>
