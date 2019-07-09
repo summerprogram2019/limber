@@ -38,6 +38,13 @@ paths:
       tags:
       - Group
       description: Update a group
+      parameters:
+      - name: id
+        in: path
+        description: The id of the group to query
+        required: true
+        schema:
+          type: integer
       requestBody:
         required: true
         content:
@@ -76,10 +83,12 @@ paths:
                         type: array
                         items:
                           type: string
-                          example: ["tag1", "tag2"]
+                        example: ["tag1", "tag2"]
                       owner:
                         type: string
                         example: "auth0|..."
+                      image:
+                        type: string
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -136,22 +145,11 @@ paths:
                       owner:
                         type: string
                         example: "auth0|..."
+                      image:
+                        type: string
         400:
-          description: "Group does not exist"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Group does not exist"
-                  data:
-                    type: object
-                    example: {}
+          description: "Bad request upon invalid group"
+          content: {}
 
         401:
           description: Unauthenticated or invalid Access Token
@@ -164,7 +162,7 @@ paths:
       tags:
         - Group
         - Invite
-      description: Invite a user to a group
+      description: Invite a user to a group (in development)
       security:
         - BearerAuth: []
       parameters:
@@ -205,9 +203,6 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content: {}
       responses:
         200:
           description: Successfully requested to join group
@@ -289,6 +284,7 @@ paths:
                       name: "New Group",
                       description: "Description of the new group",
                       tags: ["tag1", "tag2"],
+                      image: "www.imagehost.com/thing.png",
                       owner: "auth0|..."
                     }
         401:
@@ -341,9 +337,11 @@ paths:
                         example: 3600
                       tags:
                         type: array
+                        example: ["tag1", "tag2"]
                         items:
                           type: string
-                          example: ["tag1", "tag2"]
+                      image:
+                        type: string
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -390,8 +388,15 @@ paths:
   /event/{id}:
     put:
       tags:
-      - Group
+      - Event
       description: Update a event
+      parameters:
+      - name: id
+        in: path
+        description: The id of the group to query
+        required: true
+        schema:
+          type: integer
       requestBody:
         required: true
         content:
@@ -434,9 +439,11 @@ paths:
                         example: 3600
                       tags:
                         type: array
+                        example: ["tag1", "tag2"]
                         items:
                           type: string
-                          example: ["tag1", "tag2"]
+                      image:
+                        type: string
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -446,9 +453,98 @@ paths:
         400:
           description: Bad request upon invalid event
           content: {}
-#    get:
-#  /event/join/{id}:
-#    post:
+    get:
+      tags:
+      - Event
+      description: Get details of a event
+      security:
+        - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: The id of the event to query
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Successfully queried the event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successful"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "Event Name"
+                      description:
+                        type: string
+                        example: "Event description"
+                      tags:
+                        type: array
+                        example: ["tag1", "tag2"]
+                        items:
+                          type: string
+                      owner:
+                        type: string
+                        example: "auth0|..."
+                      next:
+                        type: integer
+                        example: 1
+                      datetime:
+                        type: string
+                        format: date-time
+                      length:
+                        type: integer
+                        example: 3600
+                      image:
+                        type: string
+        400:
+          description: "Bad request upon invalid event"
+          content: {}
+        401:
+          description: Unauthenticated or invalid Access Token
+          content: {}
+        403:
+          description: Permission denied
+          content: {}
+  /event/join/{id}:
+    post:
+      tags:
+        - Event
+        - Join
+      description: Invite a user to a event
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: The event id to join
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully joined event
+          content: {}
+        401:
+          description: Unauthenticated or invalid Access Token
+          content: {}
+        403:
+          description: Permission denied
+          content: {}
 components:
   securitySchemes:
     BearerAuth:
@@ -486,6 +582,8 @@ components:
           items:
             type: string
           example: ["tag1", "tag2"]
+        image:
+          type: string
     UpdateGroup:
       title: Update a group
       type: object
@@ -501,6 +599,8 @@ components:
           items:
             type: string
           example: ["tag1", "tag2"]
+        image:
+          type: string
     GroupInviteRequest:
       title: Group Invite Request
       type: object
@@ -508,3 +608,55 @@ components:
         uid:
           type: string
           description: The id of the user to invite
+    UpdateEvent:
+      title: Update an event
+      type: object
+      properties:
+        name:
+          type: string
+          example: Event Name
+        description:
+          type: string
+          example: Event description
+        next:
+          type: integer
+          example: 1
+        datetime:
+          type: string
+          format: date-time
+        length:
+          type: integer
+          example: 3600
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["tag1", "tag2"]
+        image:
+          type: string
+    CreateEvent:
+      title: Create an event
+      type: object
+      properties:
+        name:
+          type: string
+          example: Event Name
+        description:
+          type: string
+          example: Event description
+        next:
+          type: integer
+          example: 1
+        datetime:
+          type: string
+          format: date-time
+        length:
+          type: integer
+          example: 3600
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["tag1", "tag2"]
+        image:
+          type: string
