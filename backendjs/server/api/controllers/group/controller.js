@@ -2,26 +2,26 @@ const Model = require('../../../sequelize/models');
 const Group = Model.Group;
 
 export class Controller {
-  async group(req, res) {
+  async getOne(req, res) {
     try {
-      const { name, description, tags } = req.body;
-      let group = await Group.create({
-        name,
-        description,
-        tags,
-        owner: req.user.sub
-      });
-      res.sendStatus(200).json({
-        success: true,
-        message: 'Successful',
-        data: {
-          id: group.id,
-          name: group.name,
-          description: group.description,
-          tags: group.tags,
-          owner: group.owner
+      const { id } = req.params;
+      let group = await Group.findOne({
+        where: {
+          id: id
         }
       });
+      if (group === null) {
+        res.status(400).json({
+          success: false,
+          message: 'Group does not exist'
+        });
+      } else {
+        res.status(200).json({
+          success: true,
+          message: 'Successful',
+          data: group
+        });
+      }
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -30,32 +30,6 @@ export class Controller {
     }
   }
 
-  async getOne(req, res) {
-    try {
-      const { id } = req.param.id;
-      let group = await Group.findOne({
-        where: {
-          id: id
-        }
-      });
-      res.status(200).json({
-        success: true,
-        message: 'Successfully Retrieved',
-        data: {
-          id: id,
-          name: group.name,
-          description: group.description,
-          tags: group.tags,
-          owner: group.owner
-        }
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        messasge: error.message
-      });
-    }
-  }
   async get(req, res) {
     try {
       let groups = await Group.findAll();
@@ -71,29 +45,37 @@ export class Controller {
       });
     }
   }
+
   async update(req, res) {
     try {
-      const id = req.param.id;
+      const { id } = req.params;
       const { name, description, tags } = req.body;
-      let group = Group.findOne({
+      let group = await Group.findOne({
         where: {
           id: id
         }
       });
-      group.name = name;
-      group.description = description;
-      group.tags = tags;
-      group.save().then(() => {});
-      res.sendStatus(200).json({
+      if (group === null) {
+        res.status(400).json({
+          success: false,
+          message: 'Group does not exist'
+        });
+      }
+      if (group.owner !== req.user.sub) {
+        res.status(403).json({
+          success: false,
+          message: 'You are not the owner of the group'
+        });
+      }
+      let updated = await group.update({
+        name,
+        description,
+        tags
+      });
+      res.status(200).json({
         success: true,
         message: 'Successful',
-        data: {
-          id: id,
-          name: group.name,
-          description: group.description,
-          tags: group.tags,
-          owner: group.owner
-        }
+        data: updated
       });
     } catch (error) {
       res.status(500).json({
@@ -102,6 +84,7 @@ export class Controller {
       });
     }
   }
+
   async create(req, res) {
     const { name, description, tags } = req.body;
     const owner = req.user.sub;
