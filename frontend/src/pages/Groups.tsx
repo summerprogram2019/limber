@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       padding: theme.spacing(1),
-      // backgroundColor: "red",
       [theme.breakpoints.up('md')]: {
         display: "flex",
         flexDirection: "row"
@@ -31,7 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     search: {
-      // gridColumnStart: 2
       minWidth: 300,
       [theme.breakpoints.up('md')]: {
         maxWidth: 300,
@@ -44,8 +42,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     card: {
-      // gridColumnsStart: 0
-      // marginBottom: 10,
       width: "100%"
     },
     groups: {
@@ -80,7 +76,6 @@ const Groups: React.FC = () => {
     let token: string;
 
     const fetchData = async () => {
-      console.log("Fetching " + apiEndpoint + " data");
       try {
         token = await getTokenSilently();
       } catch (error) {
@@ -94,7 +89,6 @@ const Groups: React.FC = () => {
       })
       let json = await response.json();
       if (json.success) {
-        console.log("Set " + apiEndpoint + " data");
         setGroups(json.data);
       }
     };

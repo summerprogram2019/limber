@@ -92,7 +92,6 @@ const Search: React.FC<SearchProps> = ({ paperClass, onSearch }) => {
       <div className={classes.tags}>
         {tags.map((tag) => <Chip key={tag} label={tag} onDelete={() => {removeTag(tag)}} className={classes.chip} />)}
       </div>
-      {/* <div className={classes.grow}></div> */}
       <Button color="primary" onClick={onSearch}>{t("Search")}</Button>
     </Paper>
   );
