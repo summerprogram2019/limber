@@ -87,6 +87,8 @@ paths:
                       owner:
                         type: string
                         example: "auth0|..."
+                      image:
+                        type: string
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -143,6 +145,8 @@ paths:
                       owner:
                         type: string
                         example: "auth0|..."
+                      image:
+                        type: string
         400:
           description: "Bad request upon invalid group"
           content: {}
@@ -283,6 +287,7 @@ paths:
                       name: "New Group",
                       description: "Description of the new group",
                       tags: ["tag1", "tag2"],
+                      image: "www.imagehost.com/thing.png"
                       owner: "auth0|..."
                     }
         401:
@@ -338,6 +343,8 @@ paths:
                         example: ["tag1", "tag2"]
                         items:
                           type: string
+                      image:
+                        type: string
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -438,6 +445,8 @@ paths:
                         example: ["tag1", "tag2"]
                         items:
                           type: string
+                      image:
+                        type: string
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -503,6 +512,8 @@ paths:
                       length:
                         type: integer
                         example: 3600
+                      image:
+                        type: string
         400:
           description: "Bad request upon invalid event"
           content: {}
@@ -516,7 +527,7 @@ paths:
     post:
       tags:
         - Event
-        - Invite
+        - Join
       description: Invite a user to a event
       security:
         - BearerAuth: []
@@ -574,6 +585,8 @@ components:
           items:
             type: string
           example: ["tag1", "tag2"]
+        image:
+          type: string
     UpdateGroup:
       title: Update a group
       type: object
@@ -589,6 +602,8 @@ components:
           items:
             type: string
           example: ["tag1", "tag2"]
+        image:
+          type: string
     GroupInviteRequest:
       title: Group Invite Request
       type: object
@@ -620,6 +635,8 @@ components:
           items:
             type: string
           example: ["tag1", "tag2"]
+        image:
+          type: string
     CreateEvent:
       title: Create an event
       type: object
@@ -644,3 +661,5 @@ components:
           items:
             type: string
           example: ["tag1", "tag2"]
+        image:
+          type: string
