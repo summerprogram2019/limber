@@ -4,7 +4,13 @@
       "Welcome to React": "Welcome to React and react-i18next",
       "Profile": "Profile",
       "Settings": "Settings",
-      "Sign Out": "Sign Out"
+      "Sign In": "Sign In",
+      "Sign Out": "Sign Out",
+      "Home": "Home",
+      "Groups": "Groups",
+      "Join": "Join",
+      "Search": "Search",
+      "Add Tag": "Add Tag"
     }
   },
   "zh": {
@@ -12,7 +18,13 @@
       "Welcome to React": "欢迎",
       "Profile": "账户",
       "Settings": "设定",
-      "Sign Out": "登出"
+      "Sign In": "登录",
+      "Sign Out": "登出",
+      "Home": "家",
+      "Groups": "组",
+      "Join": "加入",
+      "Search": "搜索",
+      "Add Tag": "添加标记"
     }
   }
 }

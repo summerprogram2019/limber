@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React from "react";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
 
@@ -16,14 +16,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const NavBar: React.FC = ({ children }) => {
+const NavBar: React.FC = (props) => {
   const classes = useStyles();
-
   return (
-    <ElevationScroll>
-      <AppBar position="sticky" color="primary">
+    <ElevationScroll {...props}>
+      <AppBar color="primary">
         <Toolbar>
-          {children}
+          {props.children}
           <Typography variant="h6" className={classes.title}>
             {/* Application Name */}
           </Typography>

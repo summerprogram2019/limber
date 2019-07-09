@@ -75,7 +75,7 @@ const ProfileAvatar: React.FC = () => {
             loginWithRedirect({})
           }
         >
-          Sign In
+          {t("Sign In")}
           </Button>
       )}
       {isAuthenticated && user &&
