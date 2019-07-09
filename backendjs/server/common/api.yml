@@ -287,7 +287,7 @@ paths:
                       name: "New Group",
                       description: "Description of the new group",
                       tags: ["tag1", "tag2"],
-                      image: "www.imagehost.com/thing.png"
+                      image: "www.imagehost.com/thing.png",
                       owner: "auth0|..."
                     }
         401:
