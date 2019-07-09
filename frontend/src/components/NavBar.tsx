@@ -16,22 +16,20 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const NavBar: React.FC = () => {
+const NavBar: React.FC = (props) => {
   const classes = useStyles();
-
   return (
-    <React.Fragment>
-      <ElevationScroll>
-        <AppBar position="sticky" color="primary">
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              {/* Application Name */}
-            </Typography>
-            <ProfileAvatar />
-          </Toolbar>
-        </AppBar>
-      </ElevationScroll>
-    </React.Fragment>
+    <ElevationScroll {...props}>
+      <AppBar color="primary">
+        <Toolbar>
+          {props.children}
+          <Typography variant="h6" className={classes.title}>
+            {/* Application Name */}
+          </Typography>
+          <ProfileAvatar />
+        </Toolbar>
+      </AppBar>
+    </ElevationScroll>
   );
 };
 
