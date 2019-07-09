@@ -203,9 +203,6 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content: {}
       responses:
         200:
           description: Successfully requested to join group
