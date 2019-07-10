@@ -147,6 +147,9 @@ paths:
                         example: "auth0|..."
                       image:
                         type: string
+                      participating:
+                        type: boolean
+                        example: true
         400:
           description: "Bad request upon invalid group"
           content: {}
@@ -248,6 +251,9 @@ paths:
                             name:
                               type: string
                               example: Group Name
+                            participating:
+                              type: boolean
+                              example: true
         401:
           description: Unauthenticated or invalid Access Token
           content: {}
@@ -382,6 +388,9 @@ paths:
                             name:
                               type: string
                               example: Event Name
+                            participating:
+                              type: boolean
+                              example: true
         401:
           description: Unauthenticated or invalid Access Token
           content: {}
@@ -511,6 +520,9 @@ paths:
                         example: 3600
                       image:
                         type: string
+                      participating:
+                        type: boolean
+                        example: true
         400:
           description: "Bad request upon invalid event"
           content: {}
