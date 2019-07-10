@@ -49,7 +49,7 @@ export class Controller {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { name, description, tags } = req.body;
+      const { name, description, tags, image } = req.body;
       let group = await Group.findOne({
         where: {
           id: id
@@ -70,7 +70,8 @@ export class Controller {
       let updated = await group.update({
         name,
         description,
-        tags
+        tags,
+        image
       });
       res.status(200).json({
         success: true,
@@ -86,13 +87,14 @@ export class Controller {
   }
 
   async create(req, res) {
-    const { name, description, tags } = req.body;
+    const { name, description, tags, image } = req.body;
     const owner = req.user.sub;
     try {
       let group = await Group.create({
         name,
         description,
         tags,
+        image,
         owner
       });
       res.status(200).json({
