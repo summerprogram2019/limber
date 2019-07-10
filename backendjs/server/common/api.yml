@@ -89,9 +89,6 @@ paths:
                         example: "auth0|..."
                       image:
                         type: string
-                      participating:
-                        type: boolean
-                        example: true
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -150,6 +147,9 @@ paths:
                         example: "auth0|..."
                       image:
                         type: string
+                      participating:
+                        type: boolean
+                        example: true
         400:
           description: "Bad request upon invalid group"
           content: {}
@@ -453,9 +453,6 @@ paths:
                           type: string
                       image:
                         type: string
-                      participating:
-                        type: boolean
-                        example: true
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -523,6 +520,9 @@ paths:
                         example: 3600
                       image:
                         type: string
+                      participating:
+                        type: boolean
+                        example: true
         400:
           description: "Bad request upon invalid event"
           content: {}
