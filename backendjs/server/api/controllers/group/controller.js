@@ -10,16 +10,32 @@ export class Controller {
           id: id
         }
       });
+      let usergroups = await GroupParticipation.findOne({
+        where: {
+          user: req.user.sub,
+          group: id
+        }
+      });
       if (group === null) {
         res.status(400).json({
           success: false,
           message: 'Group does not exist'
         });
       } else {
+        let participate = true;
+        if (usergroups == null) {
+          participate = false;
+        }
         res.status(200).json({
           success: true,
           message: 'Successful',
-          data: group
+          data: {
+            name: group.name,
+            description: group.description,
+            tags: group.tags,
+            image: group.image,
+            participating: participate
+          }
         });
       }
     } catch (error) {
@@ -33,10 +49,34 @@ export class Controller {
   async get(req, res) {
     try {
       let groups = await Group.findAll();
+      let usergroups = await GroupParticipation.findAll({
+        where: {
+          user: req.user.sub
+        }
+      });
+      let grouplist = [];
+      let ids = [];
+      for (let i = 0; i < usergroups.length; i++) {
+        ids.push(usergroups[i].group);
+      }
+      for (let i = 0; i < groups.length; i++) {
+        let participate = false;
+        if (ids.includes(groups[i].id)) {
+          participate = true;
+        }
+        grouplist.push({
+          id: groups[i].id,
+          name: groups[i].name,
+          description: groups[i].description,
+          tags: groups[i].tags,
+          image: groups[i].image,
+          participating: participate
+        });
+      }
       res.status(200).json({
         success: true,
         message: 'Successfully Retrieved',
-        data: groups
+        data: grouplist
       });
     } catch (error) {
       res.status(500).json({
