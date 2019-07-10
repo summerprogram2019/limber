@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SearchProps {
   paperClass?: string,
-  onSearch?: () => void
+  onSearch?: (search: string, tags: string[]) => void
 }
 
 const handleChange = (setFunc: Function) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +49,12 @@ const Search: React.FC<SearchProps> = ({ paperClass, onSearch }) => {
   const [tag, setTag] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const { t } = useTranslation();
+
+  function handleClick() {
+    if (onSearch) {
+      onSearch(search, tags);
+    }
+  }
 
   function newTag(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -85,6 +91,7 @@ const Search: React.FC<SearchProps> = ({ paperClass, onSearch }) => {
           className={classes.textField}
           value={tag}
           onChange={handleChange(setTag)}
+          onBlur={() => setTag("")}
           margin="normal"
           variant="outlined"
         />
@@ -92,7 +99,7 @@ const Search: React.FC<SearchProps> = ({ paperClass, onSearch }) => {
       <div className={classes.tags}>
         {tags.map((tag) => <Chip key={tag} label={tag} onDelete={() => {removeTag(tag)}} className={classes.chip} />)}
       </div>
-      <Button color="primary" onClick={onSearch}>{t("Search")}</Button>
+      <Button color="primary" onClick={handleClick}>{t("Search")}</Button>
     </Paper>
   );
 };
