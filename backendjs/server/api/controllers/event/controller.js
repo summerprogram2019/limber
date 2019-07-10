@@ -10,16 +10,37 @@ export class Controller {
           id: id
         }
       });
+      let userevents = await EventParticipation.findOne({
+        where: {
+          user: req.user.sub,
+          event: id
+        }
+      });
       if (event === null) {
         res.status(400).json({
           success: false,
           message: 'Group does not exist'
         });
       } else {
+        let participate = true;
+        if (userevents == null) {
+          participate = false;
+        }
         res.status(200).json({
           success: true,
           message: 'Successful',
-          data: event
+          data: {
+            id: id,
+            name: event.name,
+            description: event.description,
+            tags: event.tags,
+            owner: event.owner,
+            next: event.next,
+            datetime: event.datetime,
+            length: event.length,
+            image: event.image,
+            participating: participate
+          }
         });
       }
     } catch (error) {
@@ -33,10 +54,34 @@ export class Controller {
   async get(req, res) {
     try {
       let events = await Event.findAll();
+      let userevents = await EventParticipation.findAll({
+        where: {
+          user: req.user.sub
+        }
+      });
+      let eventlist = [];
+      let ids = [];
+      for (let i = 0; i < userevents.length; i++) {
+        ids.push(userevents[i].event);
+      }
+      for (let i = 0; i < events.length; i++) {
+        let participate = false;
+        if (ids.includes(events[i].id)) {
+          participate = true;
+        }
+        eventlist.push({
+          id: events[i].id,
+          name: events[i].name,
+          description: events[i].description,
+          tags: events[i].tags,
+          image: events[i].image,
+          participating: participate
+        });
+      }
       res.status(200).json({
         success: true,
         message: 'Successfully Retrieved',
-        data: events
+        data: eventlist
       });
     } catch (error) {
       res.status(500).json({
