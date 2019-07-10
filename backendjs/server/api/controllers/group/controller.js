@@ -30,6 +30,7 @@ export class Controller {
           success: true,
           message: 'Successful',
           data: {
+            id: id,
             name: group.name,
             description: group.description,
             tags: group.tags,
