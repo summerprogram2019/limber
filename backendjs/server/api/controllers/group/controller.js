@@ -1,6 +1,6 @@
 const Model = require('../../../sequelize/models');
 const Group = Model.Group;
-
+const GroupParticipation = Model.GroupParticipation;
 export class Controller {
   async getOne(req, res) {
     try {
@@ -99,6 +99,26 @@ export class Controller {
         success: true,
         message: 'Successfully Created',
         data: group
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+  async join(req, res) {
+    const user = req.user.sub;
+    const { id } = req.params;
+    try {
+      let participation = await GroupParticipation.create({
+        user,
+        group: id
+      });
+      res.status(200).json({
+        success: true,
+        message: 'Successfully Created',
+        data: participation
       });
     } catch (error) {
       res.status(500).json({

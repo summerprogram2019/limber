@@ -5,4 +5,5 @@ export default express
   .post('/', controller.create)
   .get('/', controller.get)
   .get('/:id', controller.getOne)
-  .put('/:id', controller.update);
+  .put('/:id', controller.update)
+  .post('/join/:id', controller.join);
