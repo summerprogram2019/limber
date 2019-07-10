@@ -10,6 +10,7 @@ import translations from './translations.json';
 import Home from './pages/Home';
 import Groups from './pages/Groups';
 import Events from './pages/Events';
+import GroupDetails from './pages/GroupDetails';
 
 import 'react-flags-select/css/react-flags-select.css';
 import './App.css';
@@ -59,7 +60,8 @@ const App: React.FC = () => {
         </header>
         <Box marginTop={8}>
           <Route exact path="/" component={ Home }/>
-          <Route path="/groups" component={ Groups }/>
+          <Route exact path="/groups" component={ Groups }/>
+          <Route path="/groups/:id" component={ GroupDetails }/>
           <Route path="/events" component={ Events }/>
         </Box>
       </div>
