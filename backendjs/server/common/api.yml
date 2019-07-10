@@ -89,6 +89,9 @@ paths:
                         example: "auth0|..."
                       image:
                         type: string
+                      participating:
+                        type: boolean
+                        example: true
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -450,6 +453,9 @@ paths:
                           type: string
                       image:
                         type: string
+                      participating:
+                        type: boolean
+                        example: true
         401:
           description: Unauthenticated or invalid user token
           content: {}
