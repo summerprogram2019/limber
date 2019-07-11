@@ -3,6 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 
+import image1 from '../images/1.jpg';
+import image2 from '../images/2.jpg';
+import image3 from '../images/3.jpg';
+import image4 from '../images/4.jpg';
+import image5 from '../images/5.jpg';
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -12,38 +18,38 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   gridList: {
-    width: "100%",
+    // width: "100%",
     // height: "100%",
   },
 }));
  
  const tileData = [
    {
-     img: "https://cn.bing.com/th?id=OIP.apiBNN1dxdsS6tunI-VZUQHaEK&pid=Api&rs=1&p=0",
+     img: image1,
      title: 'Image',
      author: 'author',
     cols: 2,
    },
    {
-    img: "https://s3.drafthouse.com/images/made/Alamo-Menu-June-2015-154_1280_720_81_s_c1.jpg",
+    img: image2,
     title: 'Image',
     author: 'author',
    cols: 2,
   },
   {
-    img: "https://tse1-mm.cn.bing.net/th?id=OIP.4cE1ZYvWwO6f2aPdI2ShpgHaFV&w=266&h=190&c=7&o=5&dpr=2&pid=1.7",
+    img: image3,
     title: 'Image',
     author: 'author',
    cols: 3,
   },
   {
-    img: "https://cn.bing.com/th?id=OIP.aVD28fcGCRrif6vpNOmKBgHaHA&pid=Api&rs=1&p=0",
+    img: image4,
     title: 'Image',
     author: 'author',
    cols: 1,
   },
   {
-    img: "https://cn.bing.com/th?id=OIP.KRhABxCc5rQS0k4rn-zCBgHaFI&pid=Api&rs=1&p=0",
+    img: image5,
     title: 'Image',
     author: 'author',
    cols: 4,

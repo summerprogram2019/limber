@@ -38,7 +38,8 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: red[500],
   },
   root: {
-    flex: "none"
+    flex: "none",
+    textAlign: "left"
   },
   left: {
     textAlign: "left"
@@ -47,11 +48,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Announcments() {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
-
-  function handleExpandClick() {
-    setExpanded(!expanded);
-  }
 
   return (
     <Card className={classes.card}>
@@ -66,82 +62,10 @@ export default function Announcments() {
         classes={{content: classes.root}}
       />
       <CardContent>
-        <Typography variant="h3" color="textSecondary" component="p">
-          Upcoming AGM
+        <Typography align="left" component="p" color="textSecondary">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vel neque quam. Duis eget semper turpis. Etiam facilisis odio est, eu suscipit massa vulputate in. Ut in lacus a massa mollis pretium at sit amet nibh. Maecenas sit amet feugiat velit. Nam tortor metus, condimentum ut commodo id, mattis vel mauris. Nunc a ante vel libero ultrices blandit in vitae libero. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc commodo diam eget justo ultricies luctus vel pellentesque risus. Ut nec magna sit amet lacus sollicitudin suscipit id at quam. Proin rhoncus iaculis vestibulum. Sed ornare eros ut turpis hendrerit viverra vel et mauris. 
         </Typography>
       </CardContent>
-      <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="Show more"
-        >
-          <ExpandMoreIcon />
-        </IconButton>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent className={classes.left}>
-          <Typography variant="h5">Agenda for AGM:</Typography>
-          <Typography paragraph>
-          Agenda for the Annual General Meeting of Shareholders of Akzo Nobel N.V. (the “Company”) to be held at the Hilton Hotel, Apollolaan 138, Amsterdam, the Netherlands, on Wednesday, April 22, 2015 starting at 2:00 p.m. (CET)    
-          </Typography>
-          <Typography>
-          1.  Opening
-          </Typography>
-          <Typography>
-          2.  Report of the Board of Management for the financial year 2014
-          </Typography>
-          <Typography>    
-          3.  Financial Statements, result and dividend
-          </Typography>
-          <Typography> 
-              (a)  Discussion on the implementation of the remuneration policy
-              </Typography>
-          <Typography>  
-              (b)  Adoption of the 2014 Financial Statements of the Company (voting point) 
-              </Typography>
-          <Typography>   
-              (c)  Discussion on the dividend policy   
-              </Typography>
-          <Typography>
-              (d)  Profit allocation and adoption of the dividend proposal (voting point)
-              </Typography>
-          <Typography>
-          4.  Discharge  
-          </Typography>
-          <Typography>
-              (a)  Discharge from liability of members of the Board of Management in office in 2014 for the performance of their duties in 2014 (voting point)  
-              </Typography>
-          <Typography> 
-              (b)  Discharge from liability of members of the Supervisory Board in office in 2014 for the performance of their duties in 2014 (voting point) 
-              </Typography>
-          <Typography>     
-          5.  Supervisory Board  
-          </Typography>
-          <Typography>
-              (a)  Appointment of  Mr. D. Sluimers (voting point) 
-              </Typography>
-          <Typography>
-              (b)  Reappointment of Mrs. P. Bruzelius (voting point)
-              </Typography>
-          <Typography>  
-          6.  Authorization for the Board of Management   
-          </Typography>
-          <Typography>
-              (a)  to issue shares (voting point)
-              </Typography>
-          <Typography>
-              (b)  to restrict or exclude the pre-emptive rights of shareholders (voting point)
-              </Typography>
-          <Typography>
-          7.  Authorization for the Board of Management to acquire common shares in the share capital of the Company on behalf of the Company (voting point)  
-          </Typography>
-          <Typography>
-          8.  Any other business and closing
-          </Typography>
-        </CardContent>
-      </Collapse>
     </Card>
   );
 }

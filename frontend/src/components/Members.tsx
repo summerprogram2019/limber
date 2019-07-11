@@ -7,7 +7,7 @@ import Skeleton from 'react-loading-skeleton';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     members: {
-      maxWidth: 300
+      
     },
     avatar: {
       margin: 2
@@ -41,6 +41,7 @@ const Members: React.FC<MembersProps> = ({ members = Array(10).fill({}) }) => {
       <CardContent>
         <Typography gutterBottom align="left" variant="h5" component="h3">
           {t("Members")}
+          {members && (" (" + members.length + ")")}
         </Typography>
         <div className={classes.avatarsContainer}>
           {members.map(member => {

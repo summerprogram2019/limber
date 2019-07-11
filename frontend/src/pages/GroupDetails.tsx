@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import { Container, Breadcrumbs, Typography } from '@material-ui/core';
 import { useTranslation } from "react-i18next";
@@ -7,10 +7,17 @@ import EventCover from '../components/EventCover';
 import GroupInfo from '../components/GroupInfo';
 import PhotoGrid from '../components/PhotoGrid';
 import Members from '../components/Members';
-import { object } from 'prop-types';
+import { useAuth0 } from "../react-auth0-wrapper";
 
 interface id {
   id: string
+}
+
+interface Group {
+  name?: string,
+  description?: string,
+  image?: string,
+  participating?: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -53,6 +60,9 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         maxWidth: 300,
         marginLeft: theme.spacing(2)
+      },
+      [theme.breakpoints.down('sm')]: {
+        gridRowStart: 1
       }
     },
     upcoming: {
@@ -68,6 +78,39 @@ const useStyles = makeStyles((theme: Theme) =>
 const GroupsDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const { getTokenSilently } = useAuth0();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [group, setGroup] = useState<Group>({});
+  const id = match.params.id;
+
+  useEffect(() => {
+    const apiHost: string = "http://localhost:4000";
+    const apiEndpoint: string = "/api/v1/group/" + id;
+    let token: string;
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        token = await getTokenSilently();
+      } catch (error) {
+        return;
+      }
+      let response: Response = await fetch(apiHost + apiEndpoint, {
+        method: "GET",
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      let json = await response.json();
+      if (json.success) {
+        setGroup(json.data);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [getTokenSilently]);
+
   return (
     <React.Fragment>
       <Container fixed className={classes.header}>
@@ -78,18 +121,18 @@ const GroupsDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
           <Link to="/groups" className={classes.linkFix}>
             {t("Groups")}
           </Link>
-          <Typography color="textPrimary">{match.params.id}</Typography>
+          <Typography color="textPrimary">{(group && group.name) ? group.name : match.params.id}</Typography>
         </Breadcrumbs>
       </Container>
       { /* Group Cover */}
       <Container fixed className={classes.cover}>
-        <EventCover />
+        <EventCover name={group.name} image={group.image} joined={group.participating}/>
       </Container>
       { /* Group under top box */}
       <Container fixed className={classes.mainContainer}>
         { /* Group Description */}
         <div className={classes.descriptionContainer}>
-          <GroupInfo />
+          <GroupInfo description={group.description}/>
         </div>
         { /* Right side upcoming events and members */}
         <div className={classes.rightContainer}>

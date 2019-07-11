@@ -8,50 +8,57 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { textAlign } from '@material-ui/system';
+import Skeleton from 'react-loading-skeleton';
 
+interface EventCoverProps {
+  name?: string,
+  image?: string,
+  imageAlt?: string,
+  joined?: boolean
+}
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   card: {
     width: "100%"
   },
   media: {
-    height: 140
+    height: 280
   },
   overlay: {
-    position: "absolute",
-    top: theme.spacing(2),
-    left: theme.spacing(2),
-    padding: theme.spacing(1, 1, 1, 1),
-    backgroundColor: "white",
-    borderRadius: 3
+    padding: theme.spacing(1)
   },
   grow: {
     flexGrow: 1
   },
-  button: {
+  actions: {
+    padding: theme.spacing(2)
   }
 }));
 
-const EventCover: React.FC = () => {
+const EventCover: React.FC<EventCoverProps> = ({ name, image, imageAlt, joined = false }) => {
   const classes = useStyles();
 
   return (
     <React.Fragment>
       <Card className={classes.card}>
-        <CardActionArea>
-        <h1 className={classes.overlay}>
-          UQ Food
-        </h1>
-          <CardMedia
+        {
+          image
+            ? <CardMedia
             className={classes.media}
-            image="https://cn.bing.com/th?id=OIP.A2tR0GuvxIgQGUGsYgZAagHaEo&pid=Api&rs=1&p=0"
-            title="UQ Foodie"
-          />
-        </CardActionArea>
-        <CardActions>
+            image={image}
+            title={imageAlt || ("Image of " + name)}
+            />
+            : <Skeleton height={280}/>
+        }
+        <CardActions className={classes.actions}>
+          {
+            name
+              ? <Typography className={classes.overlay} variant="h5" component="h1">{name}</Typography>
+              : <Skeleton width={200} height={30}/>
+          }
           <div className={classes.grow} />
-          <Button size="small" color="primary">
-            Join
+          <Button disabled={joined} size="large" color="primary">
+            {joined? "Joined" : "Join"}
           </Button>
         </CardActions>
       </Card>
