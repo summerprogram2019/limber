@@ -45,9 +45,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface GroupProps {
+interface EventProps {
   id?: number,
   name?: string,
+  group?: string,
   description?: string,
   image?: string,
   imageAlt?: string
@@ -55,14 +56,14 @@ interface GroupProps {
   cardClass?: string
 }
 
-const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, tags, cardClass }) => {
+const Event: React.FC<EventProps> = ({ id, name, group, description, image, imageAlt, tags, cardClass }) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   return (
     <Card className={cardClass + " " + classes.card}>
       <CardActionArea className={classes.media}>
-        <Link to={id ? ("/groups/" + id) : "/groups"}>
+        <Link to={id ? ("/events/" + id) : "/events"}>
           { image
               ? <CardMedia
                   component="img"
@@ -76,10 +77,13 @@ const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, t
       </CardActionArea>
       <div className={classes.content}>
         <CardActionArea>
-          <Link to={id ? ("/groups/" + id) : "/groups"} className={classes.linkFix}>
+          <Link to={id ? ("/events/" + id) : "/events"} className={classes.linkFix}>
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2" align="left">
                 {name || <Skeleton/>}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p" align="left">
+                {group || <Skeleton/>}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p" align="left">
                 {description || <Skeleton count={2}/>}
@@ -103,4 +107,4 @@ const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, t
   );
 };
 
-export default Group;
+export default Event;
