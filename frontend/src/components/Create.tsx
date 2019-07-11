@@ -5,6 +5,7 @@ import { Add, Group, Event } from "@material-ui/icons";
 import { useTranslation } from "react-i18next";
 
 import CreateGroupDialog from './CreateGroupDialog';
+import CreateEventDialog from './CreateEventDialog';
 
 interface CreateProps {
   buttonClass?: string,
@@ -35,6 +36,7 @@ const Create: React.FC<CreateProps> = ({ buttonClass, getTokenSilently }) => {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [groupOpen, setGroupOpen] = useState<boolean>(false);
+  const [eventOpen, setEventOpen] = useState<boolean>(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
 
   function handleClose(event: React.MouseEvent<EventTarget>) {
@@ -50,11 +52,17 @@ const Create: React.FC<CreateProps> = ({ buttonClass, getTokenSilently }) => {
 
   function handleCloseModal() {
     setGroupOpen(false);
+    setEventOpen(false);
   }
 
   function openGroup() {
     setOpen(false);
     setGroupOpen(true);
+  }
+
+  function openEvent() {
+    setOpen(false);
+    setEventOpen(true);
   }
 
   return (
@@ -72,7 +80,7 @@ const Create: React.FC<CreateProps> = ({ buttonClass, getTokenSilently }) => {
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList>
                   <MenuItem onClick={openGroup}><Group className={classes.icon} />{t("Create Group")}</MenuItem>
-                  <MenuItem onClick={() => {}}><Event className={classes.icon} />{t("Create Event")}</MenuItem>
+                  <MenuItem onClick={openEvent}><Event className={classes.icon} />{t("Create Event")}</MenuItem>
                 </MenuList>
               </ClickAwayListener>
             </Paper>
@@ -80,6 +88,7 @@ const Create: React.FC<CreateProps> = ({ buttonClass, getTokenSilently }) => {
         )}
       </Popper>
       <CreateGroupDialog open={groupOpen} onClose={handleCloseModal} getTokenSilently={getTokenSilently}/>
+      <CreateEventDialog open={eventOpen} onClose={handleCloseModal} getTokenSilently={getTokenSilently}/>
     </React.Fragment>
   );
 }
