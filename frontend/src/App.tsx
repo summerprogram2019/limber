@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import i18n from "i18next";
 import { useTranslation, initReactI18next } from "react-i18next";
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { useAuth0 } from "./react-auth0-wrapper";
 import ReactFlagsSelect from 'react-flags-select';
 
 import NavBar from './components/NavBar';
@@ -33,6 +34,7 @@ i18n
 
 const App: React.FC = () => {
   const { t } = useTranslation();
+  const { isAuthenticated, loading, user, getTokenSilently, loginWithRedirect, logout } = useAuth0();
 
   function handleCountry(countryCode: string) {
     const languages: languages = {
@@ -42,11 +44,40 @@ const App: React.FC = () => {
     i18n.changeLanguage(languages[countryCode])
   }
 
+  async function authRequest(event: React.MouseEvent<EventTarget>, callback: (event: React.MouseEvent<EventTarget>) => void) {
+    const apiHost: string = "http://localhost:4000";
+    let token: string;
+    try {
+      token = await getTokenSilently();
+    } catch (error) {
+      token = "";
+    }
+    console.log(token);
+    let response: Response = await fetch(apiHost + "/api/v1/auth", {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+    let json = await response.json();
+    console.log(json);
+    callback(event);
+  }
+
   return (
     <Router>
       <div className="App">
         <header>
-          <NavBar>
+          <NavBar auth={{
+            isAuthenticated,
+            loading,
+            user,
+            loginWithRedirect,
+            logout,
+            authRequest,
+            getTokenSilently
+          }}
+          >
             <ReactFlagsSelect 
               countries={["US", "CN"]} 
               customLabels={{"US": "English","CN": "中文"}} 
