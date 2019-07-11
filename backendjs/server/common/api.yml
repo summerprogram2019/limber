@@ -89,6 +89,11 @@ paths:
                         example: "auth0|..."
                       image:
                         type: string
+                      members:
+                        type: array
+                        items:
+                          type: integer
+                        example: [1]
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -453,6 +458,11 @@ paths:
                           type: string
                       image:
                         type: string
+                      members:
+                        type: array
+                        items:
+                          type: integer
+                        example: [1]
         401:
           description: Unauthenticated or invalid user token
           content: {}
