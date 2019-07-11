@@ -39,7 +39,8 @@ export class Controller {
             datetime: event.datetime,
             length: event.length,
             image: event.image,
-            participating: participate
+            participating: participate,
+            group_owner: event.group_owner
           }
         });
       }
@@ -74,8 +75,13 @@ export class Controller {
           name: events[i].name,
           description: events[i].description,
           tags: events[i].tags,
+          owner: events[i].owner,
+          next: events[i].next,
+          datetime: events[i].datetime,
+          length: events[i].length,
           image: events[i].image,
-          participating: participate
+          participating: participate,
+          group_owner: events[i].group_owner
         });
       }
       res.status(200).json({
@@ -94,7 +100,7 @@ export class Controller {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { name, description, next, datetime, length, tags } = req.body;
+      const { name, description, next, datetime, length, tags, group_owner, owner } = req.body;
       let event = await Event.findOne({
         where: {
           id: id
@@ -118,7 +124,9 @@ export class Controller {
         next,
         datetime,
         length,
-        tags
+        tags,
+        group_owner,
+        owner
       });
       res.status(200).json({
         success: true,
@@ -134,7 +142,7 @@ export class Controller {
   }
 
   async create(req, res) {
-    const { name, description, next, datetime, length, tags } = req.body;
+    const { name, description, next, datetime, length, tags, group_owner } = req.body;
     const owner = req.user.sub;
     try {
       let event = await Event.create({
@@ -144,7 +152,8 @@ export class Controller {
         datetime,
         length,
         tags,
-        owner
+        owner,
+        group_owner
       });
       res.status(200).json({
         success: true,

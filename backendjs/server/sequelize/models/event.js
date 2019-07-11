@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     tags: DataTypes.JSONB,
     owner: DataTypes.STRING,
     image: DataTypes.STRING,
-    group_owner: DataType.INTEGER
+    group_owner: DataTypes.INTEGER
   }, {});
   Event.associate = function(models) {
     // associations can be defined here

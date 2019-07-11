@@ -342,6 +342,8 @@ paths:
                           type: string
                       image:
                         type: string
+                      group_owner:
+                        type: integer
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -444,6 +446,8 @@ paths:
                           type: string
                       image:
                         type: string
+                      group_owner:
+                        type: integer
         401:
           description: Unauthenticated or invalid user token
           content: {}
@@ -511,6 +515,8 @@ paths:
                         example: 3600
                       image:
                         type: string
+                      group_owner:
+                        type: integer
         400:
           description: "Bad request upon invalid event"
           content: {}
@@ -634,6 +640,8 @@ components:
           example: ["tag1", "tag2"]
         image:
           type: string
+        group_owner:
+          type: integer
     CreateEvent:
       title: Create an event
       type: object
@@ -660,3 +668,5 @@ components:
           example: ["tag1", "tag2"]
         image:
           type: string
+        group_owner:
+          type: integer
