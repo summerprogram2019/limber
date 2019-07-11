@@ -4,6 +4,7 @@ import { Card, CardActionArea, CardActions, CardMedia, CardContent, Button, Typo
 import { useTranslation } from "react-i18next";
 import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
+import { useAuth0 } from "../react-auth0-wrapper";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,6 +59,29 @@ interface GroupProps {
 const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, tags, cardClass }) => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const { getTokenSilently } = useAuth0();
+
+  function handleJoin() {
+    const apiHost: string = "http://localhost:4000";
+    const apiEndpoint: string = "/api/v1/group/join/" + id;
+    let token: string;
+
+    try {
+      token = await getTokenSilently();
+    } catch (error) {
+      return;
+    }
+    let response: Response = await fetch(apiHost + apiEndpoint, {
+      method: "POST",
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+    let json = await response.json();
+    if (json.success) {
+      // join was successful
+    }
+  }
 
   return (
     <Card className={cardClass + " " + classes.card}>
@@ -93,7 +117,7 @@ const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, t
             : <Skeleton width={100} height={20}/>}
           <div className={classes.grow}></div>
           {id
-            ? <Button size="small" color="primary">
+            ? <Button size="small" color="primary" onClick={handleJoin}>
                 {t("Join")}
               </Button>
             : !name && <Skeleton width={50} height={20}/>}
