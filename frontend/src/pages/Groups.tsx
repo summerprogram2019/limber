@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Container, Typography, Breadcrumbs } from '@material-ui/core';
 import { useTranslation } from "react-i18next";
-import { Route, Link, RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { useAuth0 } from "../react-auth0-wrapper";
 
 import Search from '../components/Search';
@@ -24,7 +24,7 @@ interface MatchingGroup extends Group {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      padding: theme.spacing(1),
+      padding: theme.spacing(2),
       [theme.breakpoints.up('md')]: {
         display: "flex",
         flexDirection: "row"
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1
     },
     header: {
-      padding: theme.spacing(2, 1, 1, 1)
+      padding: theme.spacing(2, 2, 1, 2)
     },
     linkFix: {
       textDecoration: "none",
@@ -76,11 +76,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const Groups: React.FC<RouteComponentProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const [loading, setLoading] = useState<boolean>(true);
   const [groups, setGroups] = useState<Group[]>(Array(5).fill({}));
   const [filtered, setFiltered] = useState<Group[]>(groups);
   const { getTokenSilently } = useAuth0();
 
   function filterGroups(search: string, tags: string[]) {
+    if (loading) return;
     let s: string = search.trim();
     let f: Group[] = groups;
     if (search !== "") {
@@ -128,6 +130,7 @@ const Groups: React.FC<RouteComponentProps> = () => {
       if (json.success) {
         setGroups(json.data);
         setFiltered(json.data);
+        setLoading(false);
       }
     };
 

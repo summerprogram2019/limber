@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useTranslation } from "react-i18next";
-
+import { Paper, Container } from '@material-ui/core';
 import FullCalendar from '@fullcalendar/react'
 import { EventInput } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -9,17 +10,49 @@ import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import '@fullcalendar/core/main.css';
 import '@fullcalendar/daygrid/main.css';
 import '@fullcalendar/timegrid/main.css';
+import { Redirect } from 'react-router-dom';
+import i18n from 'i18next';
+import { RawLocale } from '@fullcalendar/core/datelib/locale';
+const allLocales: RawLocale[] = require('@fullcalendar/core/locales-all');
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+      padding: theme.spacing(2),
+      minHeight: 200,
+      height: "100%"
+    },
+    container: {
+      padding: theme.spacing(2, 0)
+    }
+  }),
+);
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
+  const classes = useStyles();
   const calendarComponentRef = React.useRef<FullCalendar>(null);
+  const [redirect, setRedirect] = useState<string | null>(null);
   const [calendarWeekends, setCalendarWeekends] = useState<boolean>(true);
   const [calendarEvents, setCalendarEvents] = useState<EventInput[]>([
     {
       title: "Event Now",
-      start: new Date()
+      start: new Date(),
+      id: 1
     }
   ]);
+
+  useEffect(() => {
+    i18n.on('languageChanged', changeCalendarLanguage);
+    return () => {
+      i18n.off('languageChanged', changeCalendarLanguage);
+    }
+  }, []);
+
+  const changeCalendarLanguage = (lng: string) => {
+    let calendarApi = calendarComponentRef.current!.getApi();
+    calendarApi.setOption("locale", lng);
+  }
   
   function toggleWeekends() {
     setCalendarWeekends(calendarWeekends => !calendarWeekends);
@@ -41,16 +74,18 @@ const Home: React.FC = () => {
       })
     }
   }
+
+  function handleEventClick(arg: any) {
+    if (arg.event && arg.event.id) {
+      setRedirect(arg.event.id);
+    }
+  }
   
   return (
     <React.Fragment>
-      <div className='demo-app'>
-        <div className='demo-app-top'>
-          <button onClick={ toggleWeekends }>toggle weekends</button>&nbsp;
-          <button onClick={ gotoPast }>go to a date in the past</button>&nbsp;
-          (also, click a date/time to add an event)
-        </div>
-        <div className='demo-app-calendar'>
+      {redirect && <Redirect to={"/events/" + redirect} />}
+      <Container fixed className={classes.container}>
+        <Paper className={classes.paper}>
           <FullCalendar
             defaultView="dayGridMonth"
             header={{
@@ -63,9 +98,12 @@ const Home: React.FC = () => {
             weekends={ calendarWeekends }
             events={ calendarEvents }
             dateClick={ handleDateClick }
+            eventClick={handleEventClick}
+            locales={allLocales}
+            locale={i18n.language}
             />
-        </div>
-      </div>
+        </Paper>
+      </Container>
     </React.Fragment>
   )
 }
