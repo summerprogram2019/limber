@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { textAlign } from '@material-ui/system';
 import Skeleton from 'react-loading-skeleton';
+import { useTranslation } from "react-i18next";
 
 interface EventCoverProps {
   id?: number,
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const EventCover: React.FC<EventCoverProps> = ({ id, name, image, imageAlt, joined = false, onJoin }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   function handleClick() {
@@ -66,7 +68,7 @@ const EventCover: React.FC<EventCoverProps> = ({ id, name, image, imageAlt, join
           }
           <div className={classes.grow} />
           <Button disabled={joined} onClick={handleClick} size="large" color="primary">
-            {joined? "Joined" : "Join"}
+            {t(joined? "Joined" : "Join")}
           </Button>
         </CardActions>
       </Card>
