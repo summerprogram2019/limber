@@ -14,8 +14,7 @@ interface UrlProps {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     qr: {
-      maxWidth: 500,
-      marginTop: theme.spacing(2)
+      maxWidth: 500
     }
   }),
 );
@@ -34,6 +33,7 @@ const QRDialog: React.FC<UrlProps> = ({url, open, onClose, getTokenSilently}) =>
 
   return (
     <Dialog open={open} onClose={handleClose} fullScreen={fullScreen} aria-labelledby="qr-dialog">
+      <DialogTitle id="qr-dialog">QR Code</DialogTitle>
       <DialogContent>
         {
           error
