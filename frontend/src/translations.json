@@ -1,12 +1,68 @@
 {
-  "en": {
-    "translation": {
-      "Welcome to React": "Welcome to React and react-i18next"
+    "en": {
+        "translation": {
+            "Welcome to React": "Welcome to React and react-i18next",
+            "Profile": "Profile",
+            "Settings": "Settings",
+            "Sign In": "Sign In",
+            "Sign Out": "Sign Out",
+            "Home": "Home",
+            "Groups": "Groups",
+            "Join": "Join",
+            "Search": "Search",
+            "Add Tag": "Add Tag"
+        }
+    },
+    "zh": {
+        "translation": {
+            "Welcome to React": "欢迎",
+            "Profile": "账户",
+            "Settings": "设定",
+            "Sign In": "登录",
+            "Sign Out": "登出",
+            "Home": "主界面",
+            "Groups": "组",
+            "Join": "加入",
+            "Joined": "加入了",
+            "Search": "搜索",
+            "Add Tag": "添加标记",
+            "Create Group": "创建组",
+            "Create Event": "创建活动",
+            "Date": "日期",
+            "Duration": "时长",
+            "My Groups": "我的组",
+            "Members": "组员",
+            "Calendar": "日历",
+
+            "Create an Event": "创建活动",
+            "Name": "活动名称",
+            "Description": "简介",
+            "Start Date": "开始日期",
+            "Start Time": "开始时间",
+            "End Date": "结束日期",
+            "End Time": "结束时间",
+            "Tags": "关键字",
+            "Image": "图像",
+            "Group": "组",
+            "See More": "查看全文",
+
+            "Events": "活动",
+            "Oops": "哎呀",
+            "No events were found!": "没找到任何事件！",
+
+            "No groups were found!": "没找到任何组！",
+
+            "About this Group": "组简介",
+            "Announcments": "公告",
+            "Photos": "照片",
+
+            "About this Event": "活动简介",
+            "Start:": "开始",
+            "End:": "结束",
+
+            "Cancel": "取消",
+            "Create": "创建"
+
+        }
     }
-  },
-  "zh": {
-    "translation": {
-      "Welcome to React": "你们还"
-    }
-  }
 }
