@@ -58,7 +58,10 @@
 
             "About this Event": "活动简介",
             "Start:": "开始",
-            "End:": "结束"
+            "End:": "结束",
+
+            "Cancel": "取消",
+            "Create": "创建"
 
         }
     }

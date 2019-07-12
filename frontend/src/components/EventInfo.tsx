@@ -67,7 +67,7 @@ const EventInfo: React.FC<EventInfoProps> = ({ description, time, duration }) =>
         </Typography>
         <Announcments/>
         <div className={classes.more}>
-          <Button color="primary" size="small">See More</Button>
+          <Button color="primary" size="small">{t("See More")}</Button>
         </div>
         {/* Photos */}
         <Typography variant="h6" component="h3" className={classes.text}>
