@@ -44,15 +44,15 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
     const apiEndpoint: string = "/api/v1/event";
     const startDateString: string | null = startdateRef.current && startdateRef.current.value;
     const startTimeString: string | null = starttimeRef.current && starttimeRef.current.value;
-    const startDatetimeString: string | null = startDateString + "T" + startTimeString;
+    const startDatetimeString: string | null = startDateString + "T" + startTimeString + ":00Z";
     const startDatetime: Date = new Date(startDatetimeString);
     const endDateString: string | null = enddateRef.current && enddateRef.current.value;
     const endTimeString: string | null = endtimeRef.current && endtimeRef.current.value;
-    const endDatetimeString: string | null = endDateString + "T" + endTimeString;
+    const endDatetimeString: string | null = endDateString + "T" + endTimeString + ":00Z";
     const endDatetime: Date = new Date(endDatetimeString);
     const eventLength: number = DateFns.differenceInMinutes(
-      startDatetime,
-      endDatetime
+      endDatetime,
+      startDatetime
     );
     let token: string;
     try {
@@ -73,7 +73,8 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
         tags: tagsRef.current && tagsRef.current.value.split(",").map(tag => tag.trim()),
         image: imgRef.current && imgRef.current.value,
         datetime: startDatetimeString,
-        length: eventLength
+        length: Math.round(eventLength),
+        group_owner: groupRef.current && groupRef.current.value
       })
     });
     let json = await response.json();
@@ -193,7 +194,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                   }}
                 />
                 <TextField
-                  inputRef={starttimeRef}
+                  inputRef={endtimeRef}
                   type='time'
                   disabled={loading}
                   id="endtime"
@@ -232,6 +233,8 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                     name: 'group',
                     id: 'group-select',
                   }}
+                  value={values.group}
+                  onChange={handleChange}
                 >
                   <MenuItem key="0" value=""></MenuItem>
                   {groups.map(function (group: any) {
