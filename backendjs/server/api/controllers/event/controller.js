@@ -1,29 +1,29 @@
 const Model = require('../../../sequelize/models');
-const Group = Model.Group;
-const GroupParticipation = Model.GroupParticipation;
+const Event = Model.Event;
+const EventParticipation = Model.EventParticipation;
 export class Controller {
   async getOne(req, res) {
     try {
       const { id } = req.params;
-      let group = await Group.findOne({
+      let event = await Event.findOne({
         where: {
           id: id
         }
       });
-      let usergroups = await GroupParticipation.findOne({
+      let userevents = await EventParticipation.findOne({
         where: {
           user: req.user.sub,
-          group: id
+          event: id
         }
       });
-      if (group === null) {
+      if (event === null) {
         res.status(400).json({
           success: false,
           message: 'Group does not exist'
         });
       } else {
         let participate = true;
-        if (usergroups == null) {
+        if (userevents == null) {
           participate = false;
         }
         res.status(200).json({
@@ -31,11 +31,16 @@ export class Controller {
           message: 'Successful',
           data: {
             id: id,
-            name: group.name,
-            description: group.description,
-            tags: group.tags,
-            image: group.image,
-            participating: participate
+            name: event.name,
+            description: event.description,
+            tags: event.tags,
+            owner: event.owner,
+            next: event.next,
+            datetime: event.datetime,
+            length: event.length,
+            image: event.image,
+            participating: participate,
+            group_owner: event.group_owner
           }
         });
       }
@@ -49,35 +54,40 @@ export class Controller {
 
   async get(req, res) {
     try {
-      let groups = await Group.findAll();
-      let usergroups = await GroupParticipation.findAll({
+      let events = await Event.findAll();
+      let userevents = await EventParticipation.findAll({
         where: {
           user: req.user.sub
         }
       });
-      let grouplist = [];
+      let eventlist = [];
       let ids = [];
-      for (let i = 0; i < usergroups.length; i++) {
-        ids.push(usergroups[i].group);
+      for (let i = 0; i < userevents.length; i++) {
+        ids.push(userevents[i].event);
       }
-      for (let i = 0; i < groups.length; i++) {
+      for (let i = 0; i < events.length; i++) {
         let participate = false;
-        if (ids.includes(groups[i].id)) {
+        if (ids.includes(events[i].id)) {
           participate = true;
         }
-        grouplist.push({
-          id: groups[i].id,
-          name: groups[i].name,
-          description: groups[i].description,
-          tags: groups[i].tags,
-          image: groups[i].image,
-          participating: participate
+        eventlist.push({
+          id: events[i].id,
+          name: events[i].name,
+          description: events[i].description,
+          tags: events[i].tags,
+          owner: events[i].owner,
+          next: events[i].next,
+          datetime: events[i].datetime,
+          length: events[i].length,
+          image: events[i].image,
+          participating: participate,
+          group_owner: events[i].group_owner
         });
       }
       res.status(200).json({
         success: true,
         message: 'Successfully Retrieved',
-        data: grouplist
+        data: eventlist
       });
     } catch (error) {
       res.status(500).json({
@@ -90,29 +100,33 @@ export class Controller {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { name, description, tags, image } = req.body;
-      let group = await Group.findOne({
+      const { name, description, next, datetime, length, tags, group_owner, owner } = req.body;
+      let event = await Event.findOne({
         where: {
           id: id
         }
       });
-      if (group === null) {
+      if (event === null) {
         res.status(400).json({
           success: false,
           message: 'Group does not exist'
         });
       }
-      if (group.owner !== req.user.sub) {
+      if (event.owner !== req.user.sub) {
         res.status(403).json({
           success: false,
           message: 'You are not the owner of the group'
         });
       }
-      let updated = await group.update({
+      let updated = await event.update({
         name,
         description,
+        next,
+        datetime,
+        length,
         tags,
-        image
+        group_owner,
+        owner
       });
       res.status(200).json({
         success: true,
@@ -128,20 +142,23 @@ export class Controller {
   }
 
   async create(req, res) {
-    const { name, description, tags, image } = req.body;
+    const { name, description, next, datetime, length, tags, group_owner } = req.body;
     const owner = req.user.sub;
     try {
-      let group = await Group.create({
+      let event = await Event.create({
         name,
         description,
+        next,
+        datetime,
+        length,
         tags,
-        image,
-        owner
+        owner,
+        group_owner
       });
       res.status(200).json({
         success: true,
         message: 'Successfully Created',
-        data: group
+        data: event
       });
     } catch (error) {
       res.status(500).json({
@@ -154,9 +171,9 @@ export class Controller {
     const user = req.user.sub;
     const { id } = req.params;
     try {
-      let participation = await GroupParticipation.create({
+      let participation = await EventParticipation.create({
         user,
-        group: id
+        event: id
       });
       res.status(200).json({
         success: true,
