@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import i18n from "i18next";
 import { useTranslation, initReactI18next } from "react-i18next";
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { useAuth0 } from "./react-auth0-wrapper";
 import ReactFlagsSelect from 'react-flags-select';
+import { QueryParamProvider } from 'use-query-params';
 
 import NavBar from './components/NavBar';
 import translations from './translations.json';
@@ -12,10 +13,11 @@ import Home from './pages/Home';
 import Groups from './pages/Groups';
 import Events from './pages/Events';
 import GroupDetails from './pages/GroupDetails';
+import EventDetails from './pages/EventDetails';
 
 import 'react-flags-select/css/react-flags-select.css';
 import './App.css';
-import { Box } from '@material-ui/core';
+import { Box, Button, useMediaQuery } from '@material-ui/core';
 
 interface languages {
   [name: string]: string;
@@ -36,6 +38,7 @@ i18n
 const App: React.FC = () => {
   const { t } = useTranslation();
   const { isAuthenticated, loading, user, getTokenSilently, loginWithRedirect, logout } = useAuth0();
+  const navigations = useMediaQuery('(min-width:600px)');
 
   function handleCountry(countryCode: string) {
     const languages: languages = {
@@ -67,35 +70,46 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="App">
-        <header>
-          <NavBar auth={{
-            isAuthenticated,
-            loading,
-            user,
-            loginWithRedirect,
-            logout,
-            authRequest,
-            getTokenSilently
-          }}
-          >
-            <ReactFlagsSelect 
-              countries={["US", "CN"]} 
-              customLabels={{"US": "English","CN": "中文"}} 
-              placeholder="Select Language" 
-              showSelectedLabel={false}
-              defaultCountry="US"
-              selectedSize={18}
-              onSelect={handleCountry}/>
-          </NavBar>
-        </header>
-        <Box marginTop={8}>
-          <Route exact path="/" component={ Home }/>
-          <Route exact path="/groups" component={ Groups }/>
-          <Route path="/groups/:id" component={ GroupDetails }/>
-          <Route path="/events" component={ Events }/>
-        </Box>
-      </div>
+      <QueryParamProvider ReactRouterRoute={Route}>
+        <div className="App">
+          <header>
+            <NavBar auth={{
+              isAuthenticated,
+              loading,
+              user,
+              loginWithRedirect,
+              logout,
+              authRequest,
+              getTokenSilently
+            }}
+            >
+              <ReactFlagsSelect 
+                countries={["US", "CN"]} 
+                customLabels={{"US": "English","CN": "中文"}} 
+                placeholder="Select Language" 
+                showSelectedLabel={false}
+                defaultCountry="US"
+                selectedSize={18}
+                onSelect={handleCountry}
+              />
+              {
+                navigations && <React.Fragment>
+                  <Link to="/"><Button>{t("Calendar")}</Button></Link>
+                  <Link to="/groups"><Button>{t("Groups")}</Button></Link>
+                  <Link to="/events"><Button>{t("Events")}</Button></Link>
+                </React.Fragment>
+              }
+            </NavBar>
+          </header>
+          <Box marginTop={8}>
+            <Route exact path="/" component={ Home }/>
+            <Route exact path="/groups" component={ Groups }/>
+            <Route path="/groups/:id" component={ GroupDetails }/>
+            <Route exact path="/events" component={ Events }/>
+            <Route path="/events/:id" component={ EventDetails }/>
+          </Box>
+        </div>
+      </QueryParamProvider>
     </Router>
   );
 }

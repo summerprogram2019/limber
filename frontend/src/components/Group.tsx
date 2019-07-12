@@ -13,6 +13,10 @@ const useStyles = makeStyles((theme: Theme) =>
         flexDirection: "column"
       }
     },
+    cardSmall: {
+      display: "flex",
+      flexDirection: "column"
+    },
     content: {
       width: "100%",
       display: "flex",
@@ -27,6 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
         width: "100%",
         height: 140
       }
+    },
+    mediaSmall: {
+      width: "100%",
+      height: 140
     },
     actions: {
       display: "flex",
@@ -52,16 +60,25 @@ interface GroupProps {
   image?: string,
   imageAlt?: string
   tags?: string[],
-  cardClass?: string
+  joined?: boolean,
+  cardClass?: string,
+  small?: boolean,
+  onJoin?: (id: number) => void
 }
 
-const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, tags, cardClass }) => {
+const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, tags, joined = false, cardClass, small = false, onJoin }) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
+  function handleClick() {
+    if (onJoin && id) {
+      onJoin(id);
+    }
+  }
+
   return (
-    <Card className={cardClass + " " + classes.card}>
-      <CardActionArea className={classes.media}>
+    <Card className={cardClass + " " + (small ? classes.cardSmall : classes.card)}>
+      <CardActionArea className={(small ? classes.mediaSmall : classes.media)}>
         <Link to={id ? ("/groups/" + id) : "/groups"}>
           { image
               ? <CardMedia
@@ -93,8 +110,8 @@ const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, t
             : <Skeleton width={100} height={20}/>}
           <div className={classes.grow}></div>
           {id
-            ? <Button size="small" color="primary">
-                {t("Join")}
+            ? <Button disabled={joined} onClick={handleClick} size="small" color="primary">
+                {t(joined ? "Joined" : "Join")}
               </Button>
             : !name && <Skeleton width={50} height={20}/>}
         </CardActions>

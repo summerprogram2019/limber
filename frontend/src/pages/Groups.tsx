@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { useAuth0 } from "../react-auth0-wrapper";
 
-import Search from '../components/Search';
+import GroupSearch from '../components/GroupSearch';
 import Group from '../components/Group';
 
 interface Group {
@@ -14,6 +14,7 @@ interface Group {
   description: string,
   tags: string[],
   image: string,
+  participating: boolean,
   matchingTags?: number
 }
 
@@ -81,9 +82,9 @@ const Groups: React.FC<RouteComponentProps> = () => {
   const [filtered, setFiltered] = useState<Group[]>(groups);
   const { getTokenSilently } = useAuth0();
 
-  function filterGroups(search: string, tags: string[]) {
+  function filterGroups(search: string | undefined, tags: string[] | undefined) {
     if (loading) return;
-    let s: string = search.trim();
+    let s: string = search? search.trim() : "";
     let f: Group[] = groups;
     if (search !== "") {
       f = f.filter(group => {
@@ -91,7 +92,7 @@ const Groups: React.FC<RouteComponentProps> = () => {
           || group.description.toLowerCase().includes(s.toLowerCase());  
       });
     }
-    if (tags.length > 0) {
+    if (tags && tags.length > 0) {
       let t: string[] = tags.map(tag => tag.toLowerCase());
       let m: MatchingGroup[] = f.map(group => {
         group.matchingTags = group.tags.reduce((accumulator, current) => {
@@ -137,6 +138,32 @@ const Groups: React.FC<RouteComponentProps> = () => {
     fetchData();
   }, [getTokenSilently]);
 
+  async function joinGroup(id: number) {
+    const apiHost: string = "http://localhost:4000";
+    const apiEndpoint: string = "/api/v1/group/join/" + id;
+    let token: string;
+    try {
+      token = await getTokenSilently();
+    } catch (error) {
+      token = "";
+    }
+    let response: Response = await fetch(apiHost + apiEndpoint, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+    let json = await response.json();
+    if (json.success) {
+      setGroups(groups => groups.map(group => {
+        if (group.id === id) {
+          group.participating = true;
+        }
+        return group;
+      }))
+    }
+  }
+
   return (
     <React.Fragment>
       <Container fixed className={classes.header}>
@@ -158,6 +185,8 @@ const Groups: React.FC<RouteComponentProps> = () => {
                     description={group.description}
                     tags={group.tags}
                     image={group.image}
+                    joined={group.participating}
+                    onJoin={joinGroup}
                     cardClass={classes.card}
                   />)
                 : <Group
@@ -172,7 +201,7 @@ const Groups: React.FC<RouteComponentProps> = () => {
             </div>
           </div>
           <div className={classes.searchContainer}>
-            <Search paperClass={classes.search} onSearch={filterGroups}/>
+            <GroupSearch paperClass={classes.search} onSearch={filterGroups}/>
           </div>
         </Container>
     </React.Fragment>

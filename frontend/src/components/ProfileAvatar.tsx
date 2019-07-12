@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Button, IconButton, Avatar, MenuItem, Popper, Paper, ClickAwayListener, MenuList, Grow, ButtonBase } from '@material-ui/core';
-import { Person, Settings, ExitToApp, Group } from "@material-ui/icons";
+import { useMediaQuery, Button, IconButton, Avatar, MenuItem, Popper, Paper, ClickAwayListener, MenuList, Grow, ButtonBase } from '@material-ui/core';
+import { Person, Settings, ExitToApp, Group, Event, EventNote,  } from "@material-ui/icons";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 interface ProfileAvatarProps {
   isAuthenticated: any,
@@ -28,6 +29,10 @@ const useStyles = makeStyles((theme: Theme) =>
     icon: {
       padding: theme.spacing(0, 2, 0, 0),
       color: theme.palette.grey[600]
+    },
+    linkFix: {
+      textDecoration: "none",
+      color: "inherit"
     }
   }),
 );
@@ -37,6 +42,7 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ isAuthenticated, loading,
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const navigations = useMediaQuery('(max-width:600px)');
 
   function handleClose(event: React.MouseEvent<EventTarget>) {
     if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
@@ -84,6 +90,13 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ isAuthenticated, loading,
                 <Paper id="menu-list-grow" className={classes.dropdown}>
                   <ClickAwayListener onClickAway={handleClose}>
                     <MenuList>
+                      {
+                        navigations && <React.Fragment>
+                          <Link to="/" className={classes.linkFix}><MenuItem onClick={handleClose}><EventNote className={classes.icon} />{t("Calendar")}</MenuItem></Link>
+                          <Link to="/groups" className={classes.linkFix}><MenuItem onClick={handleClose}><Group className={classes.icon} />{t("Groups")}</MenuItem></Link>
+                          <Link to="/events" className={classes.linkFix}><MenuItem divider onClick={handleClose}><Event className={classes.icon} />{t("Events")}</MenuItem></Link>
+                        </React.Fragment>
+                      }
                       <MenuItem onClick={handleClose}><Person className={classes.icon} />{t("Profile")}</MenuItem>
                       <MenuItem onClick={handleClose}><Group className={classes.icon} />{t("My Groups")}</MenuItem>
                       <MenuItem onClick={(event) => {authRequest(event, handleClose)}}><Settings className={classes.icon} />{t("Settings")}</MenuItem>

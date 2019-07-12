@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from "react";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Paper, Button, TextField, Chip } from '@material-ui/core';
+import { useQueryParam, StringParam, ArrayParam } from 'use-query-params';
 import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,20 +35,20 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface SearchProps {
+interface GroupSearchProps {
   paperClass?: string,
-  onSearch?: (search: string, tags: string[]) => void
+  onSearch?: (search: string | undefined, tags: string[] | undefined) => void
 }
 
 const handleChange = (setFunc: Function) => (event: ChangeEvent<HTMLInputElement>) => {
   setFunc(event.target.value);
 }
 
-const Search: React.FC<SearchProps> = ({ paperClass, onSearch }) => {
+const GroupSearch: React.FC<GroupSearchProps> = ({ paperClass, onSearch }) => {
   const classes = useStyles();
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useQueryParam("s", StringParam);
   const [tag, setTag] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useQueryParam("tags", ArrayParam);
   const { t } = useTranslation();
 
   function handleClick() {
@@ -58,19 +59,20 @@ const Search: React.FC<SearchProps> = ({ paperClass, onSearch }) => {
 
   function newTag(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (tag !== "" && !tags.find((element: string) => {
+    if (tag !== "" && tags && !tags.find((element: string) => {
       return element === tag;
     })) {
-      setTags(tags => {
-        tags.push(tag);
-        return tags;
-      })
+      let tagsCopy = tags.slice();
+      tagsCopy.push(tag);
+      setTags(tagsCopy);
+    } else if (tag !== "" && !tags) {
+      setTags([tag]);
     }
     setTag("");
   }
 
   const removeTag = (tag: string) => {
-    setTags(tags => tags.filter(t => t !== tag));
+    setTags(tags && tags.filter(t => t !== tag));
   }
 
   return (
@@ -79,7 +81,7 @@ const Search: React.FC<SearchProps> = ({ paperClass, onSearch }) => {
         id="search"
         label={t("Search")}
         className={classes.searchField}
-        value={search}
+        value={search || ""}
         onChange={handleChange(setSearch)}
         margin="normal"
         variant="outlined"
@@ -89,7 +91,7 @@ const Search: React.FC<SearchProps> = ({ paperClass, onSearch }) => {
           id="add-tag"
           label={t("Add Tag")}
           className={classes.textField}
-          value={tag}
+          value={tag || ""}
           onChange={handleChange(setTag)}
           onBlur={() => setTag("")}
           margin="normal"
@@ -97,11 +99,11 @@ const Search: React.FC<SearchProps> = ({ paperClass, onSearch }) => {
         />
       </form>
       <div className={classes.tags}>
-        {tags.map((tag) => <Chip key={tag} label={tag} onDelete={() => {removeTag(tag)}} className={classes.chip} />)}
+        {tags && tags.map((tag) => <Chip key={tag} label={tag} onDelete={() => {removeTag(tag)}} className={classes.chip} />)}
       </div>
       <Button color="primary" onClick={handleClick}>{t("Search")}</Button>
     </Paper>
   );
 };
 
-export default Search;
+export default GroupSearch;
