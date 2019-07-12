@@ -4,13 +4,18 @@ import { Container, Typography, Breadcrumbs } from '@material-ui/core';
 import { useTranslation } from "react-i18next";
 import { Route, Link, RouteComponentProps } from 'react-router-dom';
 import { useAuth0 } from "../react-auth0-wrapper";
+import moment from 'moment';
 
-import Search from '../components/Search';
+import EventSearch from '../components/EventSearch';
 import Event from '../components/Event';
 
+type unString = string | undefined;
+type unNumber = number | undefined;
 interface Event {
   id: number,
   name: string,
+  datetime: string,
+  length: number,
   group?: {
     id: number,
     name: string
@@ -18,11 +23,23 @@ interface Event {
   description: string,
   tags: string[],
   image: string,
+  participating: boolean,
+  group_owner: number,
   matchingTags?: number
 }
 
 interface MatchingEvent extends Event {
   matchingTags: number
+}
+
+interface Group {
+  id: number,
+  name: string,
+  description: string,
+  tags: string[],
+  image: string,
+  participating: boolean,
+  matchingTags?: number
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -82,12 +99,13 @@ const Events: React.FC<RouteComponentProps> = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(true);
   const [events, setEvents] = useState<Event[]>(Array(5).fill({}));
+  const [groups, setGroups] = useState<Group[]>([]);
   const [filtered, setFiltered] = useState<Event[]>(events);
   const { getTokenSilently } = useAuth0();
 
-  function filterEvents(search: string, tags: string[]) {
+  function filterEvents(search: unString, tags: string[] | undefined, date: unString, time: unString, duration: unNumber) {
     if (loading) return;
-    let s: string = search.trim();
+    let s: string = search? search.trim() : "";
     let f: Event[] = events;
     if (search !== "") {
       f = f.filter(event => {
@@ -95,7 +113,7 @@ const Events: React.FC<RouteComponentProps> = () => {
           || event.description.toLowerCase().includes(s.toLowerCase());  
       });
     }
-    if (tags.length > 0) {
+    if (tags && tags.length > 0) {
       let t: string[] = tags.map(tag => tag.toLowerCase());
       let m: MatchingEvent[] = f.map(event => {
         event.matchingTags = event.tags.reduce((accumulator, current) => {
@@ -107,15 +125,36 @@ const Events: React.FC<RouteComponentProps> = () => {
       m = m.sort((a, b) => {
         return b.matchingTags - a.matchingTags;
       });
-      setFiltered(m);
-    } else {
-      setFiltered(f);
+      f = m;
     }
+    if (date && !time) {
+      // all events on this day
+      const dateMoment = moment(date);
+      f = f.filter(event => {
+        return dateMoment.isSame(event.datetime, 'day');
+      })
+    } else if (date && time && !duration) {
+      // all events on this day starting after this time
+      const datetimeMoment = moment(date + "T" + time);
+      f = f.filter(event => {
+        return datetimeMoment.isSame(event.datetime, 'day') &&
+          datetimeMoment.isBefore(event.datetime);
+      })
+    } else if (date && time && duration) {
+      // all events starting after this datetime and ending before datetime + duration
+      const datetimeMoment = moment(date + "T" + time);
+      f = f.filter(event => {
+        return datetimeMoment.isBefore(event.datetime) &&
+          -datetimeMoment.diff(event.datetime, 'm') + event.length <= duration;
+      })
+    }
+    setFiltered(f);
   }
 
   useEffect(() => {
     const apiHost: string = "http://localhost:4000";
-    const apiEndpoint: string = "/api/v1/event";
+    const eventEndpoint: string = "/api/v1/event";
+    const groupEndpoint: string = '/api/v1/group';
     let token: string;
 
     const fetchData = async () => {
@@ -124,22 +163,62 @@ const Events: React.FC<RouteComponentProps> = () => {
       } catch (error) {
         return;
       }
-      let response: Response = await fetch(apiHost + apiEndpoint, {
-        method: "GET",
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-      let json = await response.json();
-      if (json.success) {
-        setEvents(json.data);
-        setFiltered(json.data);
+      let [eventRes, groupRes] = await Promise.all([
+        fetch(apiHost + eventEndpoint, {
+          method: "GET",
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        }),
+        fetch(apiHost + groupEndpoint, {
+          method: "GET",
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        })
+      ]);
+      let eventJson = await eventRes.json();
+      let groupJson = await groupRes.json();
+      if (eventJson.success && groupJson.success) {
+        let events = eventJson.data.map((event: Event) => {
+          event.group = groupJson.data.find((group: Group) => group.id = event.group_owner);
+          return event;
+        })
+        setEvents(eventJson.data);
+        setFiltered(eventJson.data);
+        setGroups(groupJson.data);
         setLoading(false);
       }
     };
 
     fetchData();
   }, [getTokenSilently]);
+
+  async function joinEvent(id: number) {
+    const apiHost: string = "http://localhost:4000";
+    const apiEndpoint: string = "/api/v1/event/join/" + id;
+    let token: string;
+    try {
+      token = await getTokenSilently();
+    } catch (error) {
+      token = "";
+    }
+    let response: Response = await fetch(apiHost + apiEndpoint, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+    let json = await response.json();
+    if (json.success) {
+      setEvents(events => events.map(event => {
+        if (event.id === id) {
+          event.participating = true;
+        }
+        return event;
+      }))
+    }
+  }
 
   return (
     <React.Fragment>
@@ -159,15 +238,19 @@ const Events: React.FC<RouteComponentProps> = () => {
                     key={event.id}
                     id={event.id}
                     name={event.name}
+                    start={event.datetime && moment(event.datetime).format("ddd Do MMM h:mm a")}
+                    length={event.length}
                     group={event.group && event.group.name}
                     description={event.description}
                     tags={event.tags}
                     image={event.image}
+                    joined={event.participating}
+                    onJoin={joinEvent}
                     cardClass={classes.card}
                   />)
                 : <Event
                     name={"Oops"}
-                    group={"Ohh no"}
+                    group={"¯\\_(ツ)_/¯"}
                     description={"No events were found!"}
                     tags={[]}
                     image={"https://media.giphy.com/media/bkklBjAmlYjv2/giphy.gif"}
@@ -178,7 +261,7 @@ const Events: React.FC<RouteComponentProps> = () => {
             </div>
           </div>
           <div className={classes.searchContainer}>
-            <Search paperClass={classes.search} onSearch={filterEvents}/>
+            <EventSearch paperClass={classes.search} onSearch={filterEvents}/>
           </div>
         </Container>
     </React.Fragment>

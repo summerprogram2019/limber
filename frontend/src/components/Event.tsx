@@ -48,17 +48,42 @@ const useStyles = makeStyles((theme: Theme) =>
 interface EventProps {
   id?: number,
   name?: string,
+  start?: string,
+  length?: number,
   group?: string,
   description?: string,
   image?: string,
   imageAlt?: string
   tags?: string[],
+  joined?: boolean,
+  onJoin?: (id: number) => void,
   cardClass?: string
 }
 
-const Event: React.FC<EventProps> = ({ id, name, group, description, image, imageAlt, tags, cardClass }) => {
+const Event: React.FC<EventProps> = ({ id, name, start, length, group, description, image, imageAlt, tags, joined, onJoin, cardClass }) => {
   const classes = useStyles();
   const { t } = useTranslation();
+  let hours: string, minutes: string;
+  if (length && length >= 120) {
+    hours = (Math.floor(length / 60)) + "hrs";
+  } else if (length && length >= 60) {
+    hours = "1hr";
+  } else {
+    hours= "";
+  }
+  if (length && length % 60 === 1) {
+    minutes = "1min";
+  } else if (length && length % 60 !== 0) {
+    minutes = (length % 60) + "mins";
+  } else {
+    minutes = "";
+  }
+
+  function handleClick() {
+    if (onJoin && id) {
+      onJoin(id);
+    }
+  }
 
   return (
     <Card className={cardClass + " " + classes.card}>
@@ -82,7 +107,19 @@ const Event: React.FC<EventProps> = ({ id, name, group, description, image, imag
               <Typography gutterBottom variant="h5" component="h2" align="left">
                 {name || <Skeleton/>}
               </Typography>
-              <Typography variant="body2" color="textSecondary" component="p" align="left">
+              {
+                start && <Typography gutterBottom={length === undefined} variant="subtitle2" component="h4" align="left">
+                  {start}
+                </Typography>
+              }
+              {
+                (hours || minutes) && <Typography gutterBottom variant="subtitle2" component="h4" align="left">
+                  {hours}
+                  {(hours && minutes) && " "}
+                  {minutes}
+                </Typography>
+              }
+              <Typography variant="subtitle2" color="textSecondary" component="p" align="left">
                 {group || <Skeleton/>}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p" align="left">
@@ -97,8 +134,8 @@ const Event: React.FC<EventProps> = ({ id, name, group, description, image, imag
             : <Skeleton width={100} height={20}/>}
           <div className={classes.grow}></div>
           {id
-            ? <Button size="small" color="primary">
-                {t("Join")}
+            ? <Button disabled={joined} onClick={handleClick} size="small" color="primary">
+                {t(joined ? "Joined": "Join")}
               </Button>
             : !name && <Skeleton width={50} height={20}/>}
         </CardActions>

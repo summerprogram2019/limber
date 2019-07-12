@@ -4,9 +4,10 @@ import { Container, Breadcrumbs, Typography } from '@material-ui/core';
 import { useTranslation } from "react-i18next";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import EventCover from '../components/EventCover';
-import GroupInfo from '../components/GroupInfo';
+import EventInfo from '../components/EventInfo';
 import PhotoGrid from '../components/PhotoGrid';
 import Members from '../components/Members';
+import Group from '../components/Group';
 import { useAuth0 } from "../react-auth0-wrapper";
 
 interface id {
@@ -18,7 +19,19 @@ interface Group {
   name?: string,
   description?: string,
   image?: string,
+  tags?: string[],
   participating?: boolean
+}
+
+interface Event {
+  id?: number,
+  name?: string,
+  description?: string,
+  datetime?: string,
+  length?: number,
+  image?: string,
+  participating?: boolean,
+  group_owner?: number
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -71,21 +84,54 @@ const useStyles = makeStyles((theme: Theme) =>
     members: {
     },
     group: {
-      flexGrow: 1
+      marginBottom: theme.spacing(2)
     }
   }),
 );
 
-const GroupsDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
+const EventDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const { getTokenSilently } = useAuth0();
   const [loading, setLoading] = useState<boolean>(false);
-  const [joined, setJoined] = useState<boolean>(false);
   const [group, setGroup] = useState<Group>({});
+  const [groupId, setGroupId] = useState<number | null>(null);
+  const [event, setEvent] = useState<Event>({});
   const id = match.params.id;
 
   useEffect(() => {
+    const apiHost: string = "http://localhost:4000";
+    const apiEndpoint: string = "/api/v1/event/" + id;
+    let token: string;
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        token = await getTokenSilently();
+      } catch (error) {
+        return;
+      }
+      let response: Response = await fetch(apiHost + apiEndpoint, {
+        method: "GET",
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      let json = await response.json();
+      if (json.success) {
+        setEvent(json.data);
+        setGroupId(json.data.group_owner);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [getTokenSilently]);
+
+  useEffect(() => {
+    if (groupId === null) {
+      return;
+    }
     const apiHost: string = "http://localhost:4000";
     const apiEndpoint: string = "/api/v1/group/" + id;
     let token: string;
@@ -111,11 +157,11 @@ const GroupsDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
     };
 
     fetchData();
-  }, [getTokenSilently]);
+  }, [groupId]);
 
-  async function joinGroup(id: number) {
+  async function joinEvent(id: number) {
     const apiHost: string = "http://localhost:4000";
-    const apiEndpoint: string = "/api/v1/group/join/" + id;
+    const apiEndpoint: string = "/api/v1/event/join/" + id;
     let token: string;
     try {
       token = await getTokenSilently();
@@ -130,7 +176,10 @@ const GroupsDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
     });
     let json = await response.json();
     if (json.success) {
-      setJoined(true);
+      setEvent(event => {
+        event.participating = true;
+        return event;
+      });
     }
   }
 
@@ -141,25 +190,35 @@ const GroupsDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
           <Link to="/" className={classes.linkFix}>
             {t("Home")}
           </Link>
-          <Link to="/groups" className={classes.linkFix}>
-            {t("Groups")}
+          <Link to="/events" className={classes.linkFix}>
+            {t("Events")}
           </Link>
-          <Typography color="textPrimary">{(group && group.name) ? group.name : match.params.id}</Typography>
+          <Typography color="textPrimary">{(event && event.name) ? event.name : match.params.id}</Typography>
         </Breadcrumbs>
       </Container>
       { /* Group Cover */}
       <Container fixed className={classes.cover}>
-        <EventCover id={group.id} name={group.name} image={group.image} joined={group.participating || joined} onJoin={joinGroup}/>
+        <EventCover id={event.id} name={event.name} image={event.image} joined={event.participating} onJoin={joinEvent}/>
       </Container>
       { /* Group under top box */}
       <Container fixed className={classes.mainContainer}>
         { /* Group Description */}
         <div className={classes.descriptionContainer}>
-          <GroupInfo description={group.description}/>
+          <EventInfo description={event.description} time={event.datetime} duration={event.length}/>
         </div>
         { /* Right side upcoming events and members */}
         <div className={classes.rightContainer}>
           { /* Members */}
+          <Group
+            small
+            id={group.id}
+            name={group.name}
+            description={group.description}
+            tags={group.tags}
+            image={group.image}
+            joined={group.participating}
+            cardClass={classes.group}
+          />
           <div className={classes.members}>
             <Members members={[
               { name: "Billy Schulze", picture: "https://i0.wp.com/cdn.auth0.com/avatars/bi.png?ssl=1" },
@@ -183,4 +242,4 @@ const GroupsDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
   );
 }
 
-export default GroupsDetails;
+export default EventDetails;

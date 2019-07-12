@@ -11,10 +11,12 @@ import { textAlign } from '@material-ui/system';
 import Skeleton from 'react-loading-skeleton';
 
 interface EventCoverProps {
+  id?: number,
   name?: string,
   image?: string,
   imageAlt?: string,
-  joined?: boolean
+  joined?: boolean,
+  onJoin?: (id: number) => void
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -35,8 +37,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-const EventCover: React.FC<EventCoverProps> = ({ name, image, imageAlt, joined = false }) => {
+const EventCover: React.FC<EventCoverProps> = ({ id, name, image, imageAlt, joined = false, onJoin }) => {
   const classes = useStyles();
+
+  function handleClick() {
+    if (onJoin && id) {
+      onJoin(id);
+    }
+  }
 
   return (
     <React.Fragment>
@@ -57,7 +65,7 @@ const EventCover: React.FC<EventCoverProps> = ({ name, image, imageAlt, joined =
               : <Skeleton width={200} height={30}/>
           }
           <div className={classes.grow} />
-          <Button disabled={joined} size="large" color="primary">
+          <Button disabled={joined} onClick={handleClick} size="large" color="primary">
             {joined? "Joined" : "Join"}
           </Button>
         </CardActions>
