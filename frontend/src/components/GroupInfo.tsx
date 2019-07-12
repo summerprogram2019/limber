@@ -31,6 +31,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const GroupInfo: React.FC<GroupInfoProps> = ({ description }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -38,7 +39,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ description }) => {
       <Paper className={classes.root}>
         {/* About this group*/}
         <Typography variant="h6" component="h3" className={classes.text}>
-          About this Group
+          {t("About this Group")}
         </Typography>
         {
           description
@@ -49,15 +50,15 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ description }) => {
         }
         {/* Announcment block */}
         <Typography variant="h6" component="h3" className={classes.text}>
-          Announcments
+          {t("Announcments")}
         </Typography>
         <Announcments/>
         <div className={classes.more}>
-          <Button color="primary" size="small">See More</Button>
+          <Button color="primary" size="small">{t("See More")}</Button>
         </div>
         {/* Photos */}
         <Typography variant="h6" component="h3" className={classes.text}>
-          Photos
+          {t("Photos")}
         </Typography>
         <PhotoGrid/>
       </Paper>

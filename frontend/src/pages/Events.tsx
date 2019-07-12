@@ -249,9 +249,9 @@ const Events: React.FC<RouteComponentProps> = () => {
                     cardClass={classes.card}
                   />)
                 : <Event
-                    name={"Oops"}
+                    name={t("Oops")}
                     group={"¯\\_(ツ)_/¯"}
-                    description={"No events were found!"}
+                    description={t("No events were found!")}
                     tags={[]}
                     image={"https://media.giphy.com/media/bkklBjAmlYjv2/giphy.gif"}
                     imageAlt={"Facepalm GIF"}

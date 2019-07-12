@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogContentText, TextField, DialogActions, Button, useMediaQuery } from '@material-ui/core';
-
+import { useTranslation } from "react-i18next";
 interface CreateGroupDialogProps {
   open: boolean,
   onClose: () => void,
@@ -8,6 +8,7 @@ interface CreateGroupDialogProps {
 }
 
 const CreateGroupDialog: React.FC<CreateGroupDialogProps> = ({ open, onClose, getTokenSilently }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const fullScreen = useMediaQuery('(max-width:600px)');
@@ -71,7 +72,7 @@ const CreateGroupDialog: React.FC<CreateGroupDialogProps> = ({ open, onClose, ge
                   disabled={loading}
                   margin="dense"
                   id="name"
-                  label="Name"
+                  label={t("Name")}
                   fullWidth
                 />
                 <TextField
@@ -80,7 +81,7 @@ const CreateGroupDialog: React.FC<CreateGroupDialogProps> = ({ open, onClose, ge
                   disabled={loading}
                   margin="dense"
                   id="description"
-                  label="Description"
+                  label={t("Description")}
                   fullWidth
                 />
                 <TextField
@@ -89,7 +90,7 @@ const CreateGroupDialog: React.FC<CreateGroupDialogProps> = ({ open, onClose, ge
                   disabled={loading}
                   margin="dense"
                   id="tags"
-                  label="Tags"
+                  label={t("Tags")}
                   placeholder="tag1, tag2"
                   fullWidth
                 />
@@ -98,7 +99,7 @@ const CreateGroupDialog: React.FC<CreateGroupDialogProps> = ({ open, onClose, ge
                   disabled={loading}
                   margin="dense"
                   id="image"
-                  label="Image"
+                  label={t("Image")}
                   placeholder="URL of image"
                   fullWidth
                 />
