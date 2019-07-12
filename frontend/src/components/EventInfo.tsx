@@ -8,6 +8,7 @@ import Skeleton from 'react-loading-skeleton';
 import { Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { useTranslation } from "react-i18next";
 
 interface EventInfoProps {
   description?: string,
@@ -34,6 +35,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EventInfo: React.FC<EventInfoProps> = ({ description, time, duration }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -41,16 +43,16 @@ const EventInfo: React.FC<EventInfoProps> = ({ description, time, duration }) =>
       <Paper className={classes.root}>
         {/* About this group*/}
         <Typography variant="h6" component="h3" className={classes.text}>
-          About this Event
+          {t("About this Event")}
         </Typography>
         {
           time && <Typography component="p" variant="body2" className={classes.text}>
-              Start: {moment(time).format("LLLL")}
+              {t("Start:")} {moment(time).format("LLLL")}
             </Typography>
         }
         {
           time && duration && <Typography component="p" variant="body2" className={classes.text}>
-              End: {moment(time).add(duration, 'm').format("LLLL")}
+              {t("End:")} {moment(time).add(duration, 'm').format("LLLL")}
             </Typography>
         }
         {
@@ -62,7 +64,7 @@ const EventInfo: React.FC<EventInfoProps> = ({ description, time, duration }) =>
         }
         {/* Announcment block */}
         <Typography variant="h6" component="h3" className={classes.text}>
-          Announcments
+          {t("Announcments")}
         </Typography>
         <Announcments/>
         <div className={classes.more}>
@@ -70,7 +72,7 @@ const EventInfo: React.FC<EventInfoProps> = ({ description, time, duration }) =>
         </div>
         {/* Photos */}
         <Typography variant="h6" component="h3" className={classes.text}>
-          Photos
+          {t("Photos")}
         </Typography>
         <PhotoGrid/>
       </Paper>

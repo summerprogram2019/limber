@@ -190,8 +190,8 @@ const Groups: React.FC<RouteComponentProps> = () => {
                     cardClass={classes.card}
                   />)
                 : <Group
-                    name={"Oops"}
-                    description={"No groups were found!"}
+                    name={t("Oops")}
+                    description={t("No groups were found!")}
                     tags={[]}
                     image={"https://media.giphy.com/media/bkklBjAmlYjv2/giphy.gif"}
                     imageAlt={"Facepalm GIF"}

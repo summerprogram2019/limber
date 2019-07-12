@@ -5,6 +5,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useAuth0 } from "../react-auth0-wrapper";
+import { useTranslation } from "react-i18next";
 
 interface CreateEventDialogProps {
   open: boolean,
@@ -19,6 +20,7 @@ interface Group {
 }
 
 const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, getTokenSilently }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const fullScreen = useMediaQuery('(max-width:600px)');
@@ -133,7 +135,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
 
   return (
     <Dialog open={open} onClose={handleClose} fullScreen={fullScreen} aria-labelledby="create-event-dialog">
-      <DialogTitle id="create-event-dialog">Create an Event</DialogTitle>
+      <DialogTitle id="create-event-dialog">{t("Create an Event")}</DialogTitle>
       <DialogContent>
         {
           error
@@ -147,7 +149,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                   disabled={loading}
                   margin="dense"
                   id="name"
-                  label="Name"
+                  label={t("Name")}
                   fullWidth
                 />
                 <TextField
@@ -156,7 +158,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                   disabled={loading}
                   margin="dense"
                   id="description"
-                  label="Description"
+                  label={t("Description")}
                   fullWidth
                 />
                 <TextField
@@ -164,7 +166,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                   type='date'
                   disabled={loading}
                   id="startdate"
-                  label="Start Date"
+                  label={t("Start Date")}
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
@@ -175,7 +177,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                   type='time'
                   disabled={loading}
                   id="starttime"
-                  label="Start Time"
+                  label={t("Start Time")}
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
@@ -186,7 +188,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                   type='date'
                   disabled={loading}
                   id="enddate"
-                  label="End Date"
+                  label={t("End Date")}
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
@@ -197,7 +199,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                   type='time'
                   disabled={loading}
                   id="endtime"
-                  label="End Time"
+                  label={t("End Time")}
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
@@ -209,7 +211,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                   disabled={loading}
                   margin="dense"
                   id="tags"
-                  label="Tags"
+                  label={t("Tags")}
                   placeholder="tag1, tag2"
                   fullWidth
                 />
@@ -218,11 +220,11 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                   disabled={loading}
                   margin="dense"
                   id="image"
-                  label="Image"
+                  label={t("Image")}
                   placeholder="URL of image"
                   fullWidth
                 />
-                <InputLabel shrink htmlFor="group-simple">Group</InputLabel>
+                <InputLabel shrink htmlFor="group-simple">{t("Group")}</InputLabel>
                 <Select
                   fullWidth
                   id="group-owner"
