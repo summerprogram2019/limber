@@ -1,4 +1,5 @@
 const Model = require('../../../sequelize/models');
+const User = Model.User;
 const Group = Model.Group;
 const GroupParticipation = Model.GroupParticipation;
 export class Controller {
@@ -16,6 +17,18 @@ export class Controller {
           group: id
         }
       });
+      const member_participations = await GroupParticipation.findAll({
+        where: {
+          group: id
+        }
+      });
+      const members = await Promise.all(member_participations.map(function (part) {
+        return User.findOne({
+          where: {
+            sub: part.user
+          }
+        });
+      }));
       if (group === null) {
         res.status(400).json({
           success: false,
@@ -35,7 +48,8 @@ export class Controller {
             description: group.description,
             tags: group.tags,
             image: group.image,
-            participating: participate
+            participating: participate,
+            members: members
           }
         });
       }
