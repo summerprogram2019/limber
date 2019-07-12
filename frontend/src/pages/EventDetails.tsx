@@ -94,6 +94,7 @@ const EventDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
   const { t } = useTranslation();
   const { getTokenSilently } = useAuth0();
   const [loading, setLoading] = useState<boolean>(false);
+  const [joined, setJoined] = useState<boolean>(false);
   const [group, setGroup] = useState<Group>({});
   const [groupId, setGroupId] = useState<number | null>(null);
   const [event, setEvent] = useState<Event>({});
@@ -176,10 +177,7 @@ const EventDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
     });
     let json = await response.json();
     if (json.success) {
-      setEvent(event => {
-        event.participating = true;
-        return event;
-      });
+      setJoined(true);
     }
   }
 
@@ -198,7 +196,7 @@ const EventDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
       </Container>
       { /* Group Cover */}
       <Container fixed className={classes.cover}>
-        <EventCover id={event.id} name={event.name} image={event.image} joined={event.participating} onJoin={joinEvent}/>
+        <EventCover id={event.id} name={event.name} image={event.image} joined={event.participating || joined} onJoin={joinEvent}/>
       </Container>
       { /* Group under top box */}
       <Container fixed className={classes.mainContainer}>
