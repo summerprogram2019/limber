@@ -108,10 +108,10 @@ const CreateGroupDialog: React.FC<CreateGroupDialogProps> = ({ open, onClose, ge
       </DialogContent>
       <DialogActions>
         <Button disabled={loading} onClick={handleClose} color="primary">
-          Cancel
+          {t("Cancel")}
         </Button>
         <Button disabled={loading || !!error} onClick={createGroup} color="primary">
-          Create
+          {t("Create")}
         </Button>
       </DialogActions>
     </Dialog>

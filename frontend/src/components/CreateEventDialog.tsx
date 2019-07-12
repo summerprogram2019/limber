@@ -247,10 +247,10 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
       </DialogContent>
       <DialogActions>
         <Button disabled={loading} onClick={handleClose} color="primary">
-          Cancel
+          {t("Cancel")}
         </Button>
         <Button disabled={loading || !!error} onClick={createEvent} color="primary">
-          Create
+          {t("Create")}
         </Button>
       </DialogActions>
     </Dialog>
