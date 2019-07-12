@@ -23,6 +23,12 @@ interface Group {
   participating?: boolean
 }
 
+interface Member {
+  name: string,
+  profile: string,
+  picture?: string
+}
+
 interface Event {
   id?: number,
   name?: string,
@@ -31,7 +37,9 @@ interface Event {
   length?: number,
   image?: string,
   participating?: boolean,
-  group_owner?: number
+  members?: Member[],
+  group_owner?: number,
+  new?: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -92,13 +100,26 @@ const useStyles = makeStyles((theme: Theme) =>
 const EventDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { getTokenSilently } = useAuth0();
+  const { user, getTokenSilently } = useAuth0();
   const [loading, setLoading] = useState<boolean>(false);
   const [joined, setJoined] = useState<boolean>(false);
   const [group, setGroup] = useState<Group>({});
   const [groupId, setGroupId] = useState<number | null>(null);
   const [event, setEvent] = useState<Event>({});
   const id = match.params.id;
+
+  let members;
+  if (event.members) {
+    members = event.members.slice();
+    if (joined) {
+      members.push({
+        name: user.name,
+        profile: user.picture,
+        picture: user.picture
+      });
+    }
+  }
+
 
   useEffect(() => {
     const apiHost: string = "http://localhost:4000";
@@ -120,7 +141,12 @@ const EventDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
       })
       let json = await response.json();
       if (json.success) {
-        setEvent(json.data);
+        let event = json.data;
+        event.members = event.members.map((member: Member) => {
+          member.picture = member.profile;
+          return member;
+        })
+        setEvent(event);
         setGroupId(json.data.group_owner);
         setLoading(false);
       }
@@ -134,7 +160,7 @@ const EventDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
       return;
     }
     const apiHost: string = "http://localhost:4000";
-    const apiEndpoint: string = "/api/v1/group/" + id;
+    const apiEndpoint: string = "/api/v1/group/" + groupId;
     let token: string;
 
     const fetchData = async () => {
@@ -218,21 +244,7 @@ const EventDetails: React.FC<RouteComponentProps<id>> = ({ match }) => {
             cardClass={classes.group}
           />
           <div className={classes.members}>
-            <Members members={[
-              { name: "Billy Schulze", picture: "https://i0.wp.com/cdn.auth0.com/avatars/bi.png?ssl=1" },
-              { name: "Yazaru Uru", picture: "https://www.bing.com/th?id=OIP.tvDzCyvwFvkxzn91PZ_qBgHaGL&w=233&h=194&c=7&o=5&pid=1.7" },
-              { name: "Emerson Wu", picture: "https://i0.wp.com/cdn.auth0.com/avatars/em.png?ssl=1" }, 
-              { name: "Yazaru Uru", picture: "https://www.bing.com/th?id=OIP.VTkxo1eE2ej2B_rjFtM2lgHaHa&pid=Api&rs=1&p=0" },
-              { name: "Sunny Lee", picture: "https://i0.wp.com/cdn.auth0.com/avatars/sl.png?ssl=1" }, 
-              { name: "Kit Kat", picture: "https://i0.wp.com/cdn.auth0.com/avatars/kk.png?ssl=1" }, 
-              { name: "Machine Learning", picture: "https://i0.wp.com/cdn.auth0.com/avatars/ml.png?ssl=1" }, 
-              { name: "Frank Ku", picture: "https://i0.wp.com/cdn.auth0.com/avatars/fk.png?ssl=1" }, 
-              { name: "Yazaru Uru", picture: "https://i0.wp.com/cdn.auth0.com/avatars/yu.png?ssl=1" },
-              { name: "Yazaru Uru", picture: "https://i0.wp.com/cdn.auth0.com/avatars/ks.png?ssl=1" },
-              { name: "Yazaru Uru", picture: "https://www.bing.com/th?id=OIP.Zb5-XDMwL991BL0cXnqj-gHaHa&pid=Api&rs=1&p=0" },
-              { name: "Yazaru Uru", picture: "https://www.bing.com/th?id=OIP.gObgjMoH_5mblgxlJ8GrtQHaHa&pid=Api&rs=1&p=0" }
-
-            ]} />
+            <Members members={members}/>
           </div>
         </div>
       </Container>

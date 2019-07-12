@@ -138,13 +138,13 @@ const Events: React.FC<RouteComponentProps> = () => {
       const datetimeMoment = moment(date + "T" + time);
       f = f.filter(event => {
         return datetimeMoment.isSame(event.datetime, 'day') &&
-          datetimeMoment.isBefore(event.datetime);
+          datetimeMoment.isSameOrBefore(event.datetime);
       })
     } else if (date && time && duration) {
       // all events starting after this datetime and ending before datetime + duration
       const datetimeMoment = moment(date + "T" + time);
       f = f.filter(event => {
-        return datetimeMoment.isBefore(event.datetime) &&
+        return datetimeMoment.isSameOrBefore(event.datetime) &&
           -datetimeMoment.diff(event.datetime, 'm') + event.length <= duration;
       })
     }
@@ -181,10 +181,10 @@ const Events: React.FC<RouteComponentProps> = () => {
       let groupJson = await groupRes.json();
       if (eventJson.success && groupJson.success) {
         let events = eventJson.data.map((event: Event) => {
-          event.group = groupJson.data.find((group: Group) => group.id = event.group_owner);
+          event.group = groupJson.data.find((group: Group) => group.id === event.group_owner);
           return event;
         })
-        setEvents(eventJson.data);
+        setEvents(events);
         setFiltered(eventJson.data);
         setGroups(groupJson.data);
         setLoading(false);
