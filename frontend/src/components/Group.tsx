@@ -1,9 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Card, CardActionArea, CardActions, CardMedia, CardContent, Button, Typography, Chip, CssBaseline } from '@material-ui/core';
 import { useTranslation } from "react-i18next";
 import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
+import QRDialog from './QR';
+import { useAuth0 } from "../react-auth0-wrapper";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,11 +71,24 @@ interface GroupProps {
 const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, tags, joined = false, cardClass, small = false, onJoin }) => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const [open, setOpen] = useState<boolean>(false);
+  const {getTokenSilently} = useAuth0();
+  const apiHost: string = "http://localhost:4000";
+  const apiEndpoint: string = "/api/v1/group/join/";
+  const url: string = apiHost + apiEndpoint + id;
 
   function handleClick() {
     if (onJoin && id) {
       onJoin(id);
     }
+  }
+
+  function handleCloseModal() {
+    setOpen(false);
+  }
+
+  function openQR() {
+    setOpen(true);
   }
 
   return (
@@ -114,8 +129,12 @@ const Group: React.FC<GroupProps> = ({ id, name, description, image, imageAlt, t
                 {t(joined ? "Joined" : "Join")}
               </Button>
             : !name && <Skeleton width={50} height={20}/>}
+          <Button onClick={openQR} size="small" color="primary">
+            {t("QR")}
+          </Button>
         </CardActions>
       </div>
+      <QRDialog open={open} onClose={handleCloseModal} getTokenSilently={getTokenSilently} url={url} />
     </Card>
   );
 };
