@@ -42,7 +42,7 @@ const QRDialog: React.FC<UrlProps> = ({url, open, onClose, getTokenSilently}) =>
               </DialogContentText>
             : <React.Fragment>
                 <div className='classes.qr'>
-                  <QRCode value="url" />
+                  <QRCode value={url} />
                 </div>
               </React.Fragment>
         }
