@@ -116,19 +116,17 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
     })
     let json = await response.json();
     if (json.success) {
+      console.log(json.data);
       let filtered = json.data.filter((group: any) => (group.participating));
       return filtered;
     }
-    return null;
+    return [];
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      let groups = await getGroups();
-      if (groups === null) {
-        groups = [];
-      }
-      setGroups(groups);
+      let filtered = await getGroups();
+      setGroups(filtered);
     };
     fetchData();
   }, [getTokenSilently]);
@@ -226,9 +224,7 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                 />
                 <InputLabel shrink htmlFor="group-simple">Group</InputLabel>
                 <Select
-                  native
                   fullWidth
-                  value={values.group}
                   id="group-owner"
                   disabled={loading}
                   inputRef={groupRef}
@@ -237,10 +233,10 @@ const CreateEventDialog: React.FC<CreateEventDialogProps> = ({ open, onClose, ge
                     id: 'group-select',
                   }}
                 >
-                  <MenuItem value=""></MenuItem>
+                  <MenuItem key="0" value=""></MenuItem>
                   {groups.map(function (group: any) {
                     return (
-                      <MenuItem value={group.id}>{group.name}</MenuItem>
+                      <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
                     );
                   })}
                 </Select>
