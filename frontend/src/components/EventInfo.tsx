@@ -8,7 +8,6 @@ import Skeleton from 'react-loading-skeleton';
 import { Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { useTranslation } from "react-i18next";
 
 interface EventInfoProps {
   description?: string,
